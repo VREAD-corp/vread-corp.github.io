@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vread-corp.github.io/sitemap.xml
+Sitemap: https://vread-corp.github.io/kit-qualiopi-v10/sitemap.xml
+Sitemap: https://vread-corp.github.io/kit-gpsr-vendeurs/sitemap.xml
+Sitemap: https://vread-corp.github.io/veille-ao-formation/sitemap.xml
+Sitemap: https://vread-corp.github.io/tcf-canada-entrainement/sitemap.xml
+Sitemap: https://vread-corp.github.io/comprendre-mon-courrier/sitemap.xml
+Sitemap: https://vread-corp.github.io/declaration-accessibilite/sitemap.xml
+Sitemap: https://vread-corp.github.io/veille-marques/sitemap.xml
+Sitemap: https://vread-corp.github.io/visibilite-ia/sitemap.xml
