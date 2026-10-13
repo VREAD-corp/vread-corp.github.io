@@ -33,7 +33,7 @@
   </nav>
 </div></header>
 <main id="contenu"><div class="wrap">
-  <section class="hero" aria-labelledby="h-titre">
+  <section class="hero" id="hero" aria-labelledby="h-titre">
     <div>
       <p class="eyebrow">READ FRANCE SAS, Paris</p>
       <h1 id="h-titre">Kit Qualiopi 2026, pack GPSR, alertes d’appels d’offres formation et audit d’accessibilité, de 29 € à 149 €</h1>
@@ -55,7 +55,7 @@
     <p class="sec-lead">Vente aux professionnels (SIREN), paiement par carte avec Stripe, facture par e-mail. Chaque offre a sa version gratuite pour essayer avant d’acheter.</p>
 
     <div class="groups">
-    <div class="group" id="of">
+    <div class="group" id="of" data-section="offre-of">
       <div class="group-head"><h3>Organismes de formation</h3><p>Certification Qualiopi et marchés publics</p></div>
       <ul class="grid">
         <li class="card">
@@ -73,7 +73,7 @@
       </ul>
     </div>
 
-    <div class="group" id="vendeurs">
+    <div class="group" id="vendeurs" data-section="offre-vendeurs">
       <div class="group-head"><h3>Vendeurs en ligne</h3><p>Règlement sur la sécurité générale des produits (UE) 2023/988</p></div>
       <ul class="grid">
         <li class="card">
@@ -85,7 +85,7 @@
       </ul>
     </div>
 
-    <div class="group" id="sites">
+    <div class="group" id="sites" data-section="offre-sites">
       <div class="group-head"><h3>Entreprises et sites web</h3><p>Accessibilité numérique (Acte européen sur l’accessibilité, RGAA)</p></div>
       <ul class="grid">
         <li class="card">
@@ -154,9 +154,10 @@
 </ul>
 </nav>
 
-  <p>Outils et kits édités par READ FRANCE SAS (SIREN 988 741 773), Paris. Mesure d’audience anonyme, sans cookie ni donnée personnelle.</p>
+  <p>Outils et kits édités par READ FRANCE SAS (SIREN 988 741 773), Paris. Mesure d’audience et de navigation anonyme et agrégée, sans cookie ni donnée personnelle.</p>
   <nav aria-label="Pied de page"><a href="/">Accueil</a><a href="/mentions-legales.html">Mentions légales et confidentialité</a><a href="/informations-prospects/">Informations prospects</a><a href="mailto:octave@vread.fr">Contact : octave@vread.fr</a></nav>
 </div></footer>
 <script src="/mesure.js" defer></script>
+<script src="/cro.js" data-site="hub" data-api="https://script.google.com/macros/s/AKfycbzD1IRL8QALluKGZxgGiORFP6-DkC_qFJYR9aOxZiimxa06nbCqpzUI-9iLblp6V2VY/exec" data-hosts="outils.vread.fr" data-cta="a.btn:not(.ghost)" defer></script>
 </body>
 </html>
