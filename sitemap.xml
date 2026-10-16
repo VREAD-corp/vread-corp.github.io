@@ -1,29 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap><loc>https://outils.vread.fr/sitemap-hub.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/kit-qualiopi-v10/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/kit-gpsr-vendeurs/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/veille-ao-formation/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/tcf-canada-entrainement/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/comprendre-mon-courrier/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/declaration-accessibilite/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/veille-marques/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/visibilite-ia/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/deutschdrill/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/plaindpdp/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/veille-ao-afrique/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/venda-no-azul/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/candadopyme/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/puntal-sst/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/handa-cse/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/pieces-en-ordre/sitemap.xml</loc></sitemap>
   <sitemap><loc>https://outils.vread.fr/acquimetre/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/charte-ia/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/civiclasse/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/lot-repere/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/sans-tic/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/test-pub-app/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/chapter-checks/sitemap.xml</loc></sitemap>
-  <sitemap><loc>https://outils.vread.fr/lectoclasse/sitemap.xml</loc></sitemap>
   <sitemap><loc>https://outils.vread.fr/lu-et-retenu/sitemap.xml</loc></sitemap>
+  <sitemap><loc>https://outils.vread.fr/civiclasse/sitemap.xml</loc></sitemap>
+  <sitemap><loc>https://outils.vread.fr/lectoclasse/sitemap.xml</loc></sitemap>
+  <sitemap><loc>https://outils.vread.fr/chapter-checks/sitemap.xml</loc></sitemap>
 </sitemapindex>

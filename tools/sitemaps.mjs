@@ -8,16 +8,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const ORIGIN = 'https://outils.vread.fr';
+// 2026-10-16: the sites not about reading and comprehension moved to the Jalonel brand (one subdomain each, hub
+// https://jalonel.com/, repo VREAD-corp/jalonel-hub, which lists their sitemaps in its own robots.txt). Only the
+// READ FRANCE reading offers stay here.
 export const SITES = [
-  // France, 11 Oct
-  'kit-qualiopi-v10', 'kit-gpsr-vendeurs', 'veille-ao-formation', 'tcf-canada-entrainement', 'comprendre-mon-courrier',
-  'declaration-accessibilite', 'veille-marques', 'visibilite-ia',
-  // international ventures, 12-13 Oct
-  'deutschdrill', 'plaindpdp', 'veille-ao-afrique', 'venda-no-azul', 'candadopyme', 'puntal-sst', 'handa-cse',
-  'pieces-en-ordre',
-  // READ FRANCE assets, 13-14 Oct
-  'acquimetre', 'charte-ia', 'civiclasse', 'lot-repere', 'sans-tic', 'test-pub-app', 'chapter-checks', 'lectoclasse',
-  'lu-et-retenu',
+  'acquimetre', 'lu-et-retenu', 'civiclasse', 'lectoclasse', 'chapter-checks',
 ];
 const sitemaps = [`${ORIGIN}/sitemap-hub.xml`, ...SITES.map((s) => `${ORIGIN}/${s}/sitemap.xml`)];
 
