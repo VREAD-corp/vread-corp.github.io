@@ -6,4 +6,6 @@
   <sitemap><loc>https://outils.vread.fr/civiclasse/sitemap.xml</loc></sitemap>
   <sitemap><loc>https://outils.vread.fr/lectoclasse/sitemap.xml</loc></sitemap>
   <sitemap><loc>https://outils.vread.fr/chapter-checks/sitemap.xml</loc></sitemap>
+  <sitemap><loc>https://outils.vread.fr/lectopoint/sitemap.xml</loc></sitemap>
+  <sitemap><loc>https://outils.vread.fr/lectoguide/sitemap.xml</loc></sitemap>
 </sitemapindex>

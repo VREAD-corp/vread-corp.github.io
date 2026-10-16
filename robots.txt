@@ -7,3 +7,5 @@ Sitemap: https://outils.vread.fr/lu-et-retenu/sitemap.xml
 Sitemap: https://outils.vread.fr/civiclasse/sitemap.xml
 Sitemap: https://outils.vread.fr/lectoclasse/sitemap.xml
 Sitemap: https://outils.vread.fr/chapter-checks/sitemap.xml
+Sitemap: https://outils.vread.fr/lectopoint/sitemap.xml
+Sitemap: https://outils.vread.fr/lectoguide/sitemap.xml

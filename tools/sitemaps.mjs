@@ -12,7 +12,7 @@ export const ORIGIN = 'https://outils.vread.fr';
 // https://jalonel.com/, repo VREAD-corp/jalonel-hub, which lists their sitemaps in its own robots.txt). Only the
 // READ FRANCE reading offers stay here.
 export const SITES = [
-  'acquimetre', 'lu-et-retenu', 'civiclasse', 'lectoclasse', 'chapter-checks',
+  'acquimetre', 'lu-et-retenu', 'civiclasse', 'lectoclasse', 'chapter-checks', 'lectopoint', 'lectoguide',
 ];
 const sitemaps = [`${ORIGIN}/sitemap-hub.xml`, ...SITES.map((s) => `${ORIGIN}/${s}/sitemap.xml`)];
 
