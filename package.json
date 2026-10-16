@@ -3,6 +3,7 @@
   "private": true,
   "description": "Hub outils.vread.fr (static site, no build).",
   "scripts": {
-    "test": "node tests/cro.check.mjs cro.js && node tests/pages.check.mjs"
+    "test": "node tests/cro.check.mjs cro.js && node tests/pages.check.mjs && node tests/sitemaps.check.mjs",
+    "sitemaps": "node tools/sitemaps.mjs"
   }
 }
