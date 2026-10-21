@@ -1,0 +1,72 @@
+{
+ "_doc": "tools/monitor.mjs config: outils.vread.fr pages and their public workflows; mode fail (a failed run e-mails the maintainer).",
+ "mode": "fail",
+ "userAgent": "OctaveMonitor/1.0 (+mailto:octave@vread.fr)",
+ "workflows": [
+  {
+   "repo": "chapter-checks",
+   "workflow": "pages.yml"
+  },
+  {
+   "repo": "civiclasse",
+   "workflow": "pages.yml"
+  },
+  {
+   "repo": "lectoguide",
+   "workflow": "pages.yml"
+  },
+  {
+   "repo": "lectopoint",
+   "workflow": "pages.yml"
+  },
+  {
+   "repo": "lectoclasse",
+   "workflow": "test.yml"
+  },
+  {
+   "repo": "vread-corp.github.io",
+   "workflow": "pages-build-deployment"
+  },
+  {
+   "repo": "acquimetre",
+   "workflow": "pages-build-deployment"
+  },
+  {
+   "repo": "lectoclasse",
+   "workflow": "pages-build-deployment"
+  },
+  {
+   "repo": "lu-et-retenu",
+   "workflow": "pages-build-deployment"
+  }
+ ],
+ "sites": [
+  {
+   "url": "https://outils.vread.fr/"
+  },
+  {
+   "url": "https://outils.vread.fr/a-propos/"
+  },
+  {
+   "url": "https://outils.vread.fr/acquimetre/"
+  },
+  {
+   "url": "https://outils.vread.fr/chapter-checks/"
+  },
+  {
+   "url": "https://outils.vread.fr/civiclasse/"
+  },
+  {
+   "url": "https://outils.vread.fr/lectoclasse/"
+  },
+  {
+   "url": "https://outils.vread.fr/lectoguide/"
+  },
+  {
+   "url": "https://outils.vread.fr/lectopoint/"
+  },
+  {
+   "url": "https://outils.vread.fr/lu-et-retenu/"
+  }
+ ]
+}

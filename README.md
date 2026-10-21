@@ -7,3 +7,7 @@ Site statique, sans cookie, avec une mesure d’audience anonyme sans donnée pe
 Tests (sans dépendance) : `npm test` vérifie `cro.js` (`tests/cro.check.mjs`, copie à l’identique) et la présence de la balise `cro.js` sur chaque page HTML.
 
 `og.png` (1200×630) et `logo-512.png` sont rendus depuis `tools/og-hub.html` et `tools/logo.html` avec Playwright : `PLAYWRIGHT=<chemin du module playwright> node tools/render-images.mjs`, puis réduits en palette (PIL `quantize`).
+
+## Monitoring
+
+`.github/workflows/monitor.yml` (daily, 08:53 UTC) runs `.github/monitor/monitor.mjs` with `.github/monitor/monitor-watch.json`: HTTP status of the sites listed there and the last runs of the public workflows that build them. On any failure the job fails and GitHub e-mails the maintainer who last changed the schedule (no issue, the repository is public). Read-only, `GITHUB_TOKEN` only.

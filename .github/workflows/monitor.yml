@@ -1,0 +1,32 @@
+name: monitor
+
+# Daily check of these sites and the public workflows that build them (.github/monitor/monitor.mjs, config
+# .github/monitor/monitor-watch.json, mode "fail"): on any failure the job fails, and GitHub e-mails the maintainer who last
+# changed this schedule. Read-only, GITHUB_TOKEN only.
+on:
+  schedule:
+    - cron: '53 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write   # only to keep this schedule enabled (GitHub disables it after 60 days without a commit)
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Keep the schedule enabled
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/monitor.yml/enable" || echo "::warning::could not re-enable"
+      - name: Check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node .github/monitor/monitor.mjs --config .github/monitor/monitor-watch.json
