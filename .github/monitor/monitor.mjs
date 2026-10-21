@@ -56,7 +56,7 @@ export function evaluateStatus(s, url, now, maxAgeHours = 48) {
 export function evaluateAlerts(j, name, now, maxAgeHours = 30) {
   if (j && j.error === 'unknown_action') return { warn: `${name} : envoi des alertes pas encore activé (étape propriétaire installAlerts + redéploiement en attente)` };
   if (!j || !j.ok) return { fail: `${name} : statut des alertes illisible`, key: `${name}:alerts-unreadable` };
-  if (!j.alerts) return { warn: `${name} : aucun envoi d'alertes enregistré pour l'instant` };
+  if (!j.alerts) return { fail: `${name} : aucun envoi d'alertes enregistré (déclencheur pas encore installé : lancer installAlerts dans l'éditeur Apps Script)`, key: `${name}:alerts-never` };
   const age = hours(now - Date.parse(j.alerts.at));
   if (!j.alerts.ok) return { fail: `${name} : dernier envoi d'alertes en erreur (${j.alerts.errors} erreur(s), ${j.alerts.at})`, key: `${name}:alerts-error` };
   if (age > maxAgeHours) return { fail: `${name} : dernier envoi d'alertes il y a ${fmtH(age)}`, key: `${name}:alerts-stale` };
