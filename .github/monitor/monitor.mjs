@@ -54,9 +54,11 @@ export function evaluateStatus(s, url, now, maxAgeHours = 48) {
 
 /** Verdict on an Apps Script `alerts_status` answer. */
 export function evaluateAlerts(j, name, now, maxAgeHours = 30) {
-  if (j && j.error === 'unknown_action') return { warn: `${name} : envoi des alertes pas encore activé (étape propriétaire installAlerts + redéploiement en attente)` };
+  if (j && j.error === 'unknown_action') return { warn: `${name} : envoi des alertes pas encore déployé` };
   if (!j || !j.ok) return { fail: `${name} : statut des alertes illisible`, key: `${name}:alerts-unreadable` };
-  if (!j.alerts) return { fail: `${name} : aucun envoi d'alertes enregistré (déclencheur pas encore installé : lancer installAlerts dans l'éditeur Apps Script)`, key: `${name}:alerts-never` };
+  // Alerts must leave from a brand address, never from a personal Gmail account (2026-10-22).
+  if (j.sender && /@gmail\.com$/i.test(String(j.sender))) return { fail: `${name} : alertes envoyées depuis une adresse Gmail`, key: `${name}:alerts-gmail` };
+  if (!j.alerts) return { fail: `${name} : aucun envoi d'alertes enregistré (workflow alerts.yml pas encore lancé en réel : variable ALERTS_LIVE)`, key: `${name}:alerts-never` };
   const age = hours(now - Date.parse(j.alerts.at));
   if (!j.alerts.ok) return { fail: `${name} : dernier envoi d'alertes en erreur (${j.alerts.errors} erreur(s), ${j.alerts.at})`, key: `${name}:alerts-error` };
   if (age > maxAgeHours) return { fail: `${name} : dernier envoi d'alertes il y a ${fmtH(age)}`, key: `${name}:alerts-stale` };
