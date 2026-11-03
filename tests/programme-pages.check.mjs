@@ -156,18 +156,19 @@ for (const f of ['index.html', '404.html', 'a-propos/index.html', 'mentions-lega
   assert.deepEqual(Object.keys(cfg.window.P30.produits), []);
   assert.ok(/lang: lang/.test(read(`${DIR}/p30.js`)), 'p30.js sends the page language');
   const tool = read('en/screen-time-to-books/index.html');
-  assert.ok(tool.includes(`href="/${EN_DIR}/?utm_source=`), 'English tool links to the English page');
+  assert.ok(!tool.includes(`href="/${EN_DIR}/`) && tool.includes('apps.apple.com/us/app/vread/id6752836822'), 'English tool links to the app stores, not to the unopened English page');
   for (const f of ['index.html', '404.html', 'a-propos/index.html', 'mentions-legales.html', 'informations-prospects/index.html', 'robots.txt', 'sitemap.xml', 'sitemap-hub.xml']) {
     assert.ok(!read(f).includes(EN_DIR), f + ' mentions ' + EN_DIR);
   }
 }
 
-// 5c. Reading pages that link to the programme: same writing rules (the Lectoguide box, in « vous », is on the Lectoguide
+// 5c. Reading pages of 2026-11-03: same writing rules, no link to the programme (not opened until the founder agrees), app stores linked (the Lectoguide box, in « vous », is on the Lectoguide
 //     site, not here).
 for (const f of ['je-n-arrive-plus-a-lire/index.html', 'se-remettre-a-lire/index.html', 'lire-au-lieu-de-scroller/index.html', 'temps-ecran-en-livres/index.html']) {
   const h = read(f);
   rules(f, text(h).replace(/« Brain Drain »|Reexamining the “brain drain” effect/g, ''));
-  assert.ok(h.includes(`href="/${DIR}/?utm_source=`), f + ': links to the programme page with utm');
+  assert.ok(!h.includes(`href="/${DIR}/`), f + ': does not link to the programme page');
+  assert.ok(h.includes('apps.apple.com/fr/app/vread/id6752836822') && h.includes('play.google.com/store/apps/details?id=com.vread.app'), f + ': app stores linked');
 }
 
 // 5d. Reading pages of 2026-11-04 (lire plus, un livre par mois, quel livre pour reprendre): same writing rules, no link
