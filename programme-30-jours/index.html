@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Programme Vread de 30 jours pour refinir un livre</title>
+<meta name="description" content="20 minutes par jour, une preuve à chaque étape, un livre fini en 30 jours. Ouverture en janvier 2027.">
+<link rel="canonical" href="https://outils.vread.fr/programme-30-jours/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Programme Vread de 30 jours pour refinir un livre">
+<meta property="og:description" content="20 minutes par jour, une preuve à chaque étape, un livre fini en 30 jours. Ouverture en janvier 2027.">
+<meta property="og:url" content="https://outils.vread.fr/programme-30-jours/">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Vread">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/programme-30-jours/p30.css?v=2026-11-03">
+<script>
+// Une version de prix au hasard (a ou b), gardée dans ce navigateur pour les visites suivantes, puis la page de la version.
+(function () {
+  var k = 'p30_version', v;
+  try { v = localStorage.getItem(k); } catch (e) {}
+  if (v !== 'a' && v !== 'b') { v = Math.random() < 0.5 ? 'a' : 'b'; try { localStorage.setItem(k, v); } catch (e) {} }
+  try { var r = document.referrer.split('/')[2]; if (r && r !== location.hostname) sessionStorage.setItem('p30_ref', r); } catch (e) {}
+  location.replace('/programme-30-jours/' + v + '/' + location.search + location.hash);
+})();
+</script>
+</head>
+<body class="p30">
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="topbar"><div class="wrap">
+  <span class="wm-static">Vread <span>· programme 30 jours</span></span>
+</div></header>
+<main id="contenu"><div class="wrap">
+  <p style="margin-top:32px">Redirection vers la page du programme. Si rien ne se passe, <a href="/programme-30-jours/a/">ouvre la page du programme</a>.</p>
+</div></main>
+<script src="/cro.js" data-site="programme-30-jours" data-api="https://script.google.com/macros/s/AKfycbxXW-9xz90F1nalrIOMIVU9RarjRHTa1zb8F-ajfVIESYEfg5Ec1y4PyObDjz7HL9OA/exec" data-hosts="outils.vread.fr" defer></script>
+</body>
+</html>

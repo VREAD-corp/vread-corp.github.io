@@ -1,0 +1,88 @@
+/* Programme 30 jours (Vread) : complète /styles.css du hub (mêmes couleurs, même police). */
+.p30 main{padding:0 0 48px}
+.p30 .wrap{max-width:1040px}
+.p30 .topbar .wrap{min-height:56px}
+.p30 .wm-static{font-weight:800;letter-spacing:.02em;font-size:1.1rem;color:var(--fg)}
+.p30 .wm-static span{font-weight:500;color:var(--muted);letter-spacing:0}
+.p30 section{scroll-margin-top:16px}
+.p30 h2{font-size:clamp(1.35rem,3.4vw,1.75rem);margin:0 0 12px}
+.p30 p{margin:0 0 14px}
+
+/* Hero */
+.p30-hero{display:grid;gap:28px;padding:36px 0 40px;align-items:center}
+.p30-hero h1{font-size:clamp(1.9rem,6.2vw,3rem);margin:0 0 14px}
+.p30-hero h1 span{display:block;color:var(--accent)}
+.p30-hero .lead{font-size:1.15rem;color:var(--fg)}
+.p30-hero .cta-row{margin-top:22px}
+.p30-hero .note{color:var(--muted);font-size:.95rem;margin:12px 0 0}
+@media (min-width:880px){.p30-hero{grid-template-columns:1.2fr 1fr;gap:56px;padding:64px 0 56px}}
+
+/* Reconstituted checkpoint card (static, not a form) */
+.step-card{margin:0;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-lg);padding:20px;max-width:420px;justify-self:center;width:100%}
+.step-card .book{display:flex;justify-content:space-between;gap:12px;font-size:.88rem;color:var(--muted);margin:0 0 6px}
+.step-card .book strong{color:var(--fg);font-weight:700}
+.step-card .bar{height:6px;border-radius:99px;background:var(--bg-soft);overflow:hidden;margin:0 0 16px}
+.step-card .bar i{display:block;height:100%;width:70%;background:var(--accent)}
+.step-card .ask{font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.step-card .question{font-size:1.08rem;font-weight:600;line-height:1.45;margin:0 0 14px}
+.step-card .answer{display:flex;gap:8px}
+.step-card .answer span{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--muted);font-size:.95rem;background:var(--bg)}
+.step-card .answer b{background:var(--accent);color:var(--accent-fg);border-radius:10px;padding:10px 14px;font-size:.95rem}
+.step-card figcaption{margin-top:14px;font-size:.84rem;color:var(--muted);line-height:1.5}
+
+/* Bands */
+.band{padding:40px 0;border-top:1px solid var(--line)}
+.band.soft{background:var(--bg-soft)}
+.narrow{max-width:68ch}
+.chiffre{font-size:clamp(2.6rem,9vw,3.6rem);font-weight:800;line-height:1;margin:0 0 8px;color:var(--accent)}
+.chiffre small{font-size:.38em;font-weight:600;color:var(--muted);display:block;margin-top:6px;letter-spacing:0}
+.constat{display:grid;gap:8px 40px}
+@media (min-width:880px){.constat{grid-template-columns:240px 1fr;align-items:start}}
+
+.etapes{list-style:none;counter-reset:e;margin:8px 0 0;padding:0;display:grid;gap:14px;max-width:68ch}
+.etapes li{counter-increment:e;position:relative;padding:0 0 0 52px;min-height:40px}
+.etapes li::before{content:counter(e);position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-weight:800}
+.etapes strong{display:block}
+.etapes span{color:var(--muted)}
+
+.pourquoi blockquote{margin:0;font-size:clamp(1.15rem,3.2vw,1.4rem);line-height:1.5;font-weight:600;max-width:40ch}
+.contenu{margin:0 0 14px;padding-left:1.2em;max-width:68ch}
+.contenu li{margin:0 0 8px}
+.fine2{color:var(--muted);font-size:.92rem}
+
+/* Price */
+.prix-box{background:var(--card);border:2px solid var(--accent);border-radius:18px;padding:24px 20px;max-width:560px;box-shadow:var(--shadow)}
+.prix-montant{font-size:clamp(2.2rem,8vw,3rem);font-weight:800;line-height:1.1;margin:0 0 4px}
+.prix-montant span{font-size:.45em;font-weight:600;color:var(--muted)}
+.prix-box .btn{width:100%;margin:8px 0 12px;white-space:normal;text-align:center}
+.prix-box .fine2{margin:0}
+#p30-precommande{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+#p30-pay{margin-top:12px}
+
+/* FAQ */
+.faq details{border-top:1px solid var(--line);padding:14px 0;max-width:68ch}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:700;min-height:28px}
+.faq details p{margin:10px 0 0}
+
+.sources{font-size:.86rem;color:var(--muted);max-width:80ch}
+.sources p{margin:0 0 6px}
+
+/* Dialog */
+.p30-dialog{border:0;border-radius:18px;padding:0;width:min(520px,calc(100vw - 24px));max-height:calc(100dvh - 24px);background:var(--card);color:var(--fg);box-shadow:var(--shadow-lg)}
+.p30-dialog::backdrop{background:rgba(15,23,42,.55)}
+.p30-dialog .inner{padding:22px 20px 20px}
+.p30-dialog h2{font-size:1.35rem;margin:0 0 8px;padding-right:40px}
+.p30-dialog .x{position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;background:transparent;color:var(--muted);font-size:1.6rem;cursor:pointer;border-radius:10px}
+.p30-dialog label{display:block;font-weight:600;margin:14px 0 6px}
+.p30-dialog label small{font-weight:400;color:var(--muted)}
+.p30-dialog input[type=email],.p30-dialog input[type=text]{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:46px}
+.p30-dialog .consent{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:.94rem;line-height:1.5}
+.p30-dialog .consent input{margin-top:4px;width:20px;height:20px;flex:none}
+.p30-dialog .btn{width:100%;margin-top:16px;font-size:1rem}
+.p30-dialog .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.p30-msg{margin:12px 0 0}
+.p30-msg:empty{display:none}
+.p30-msg.ok{background:var(--accent-soft);border-radius:10px;padding:12px 14px}
+.p30-msg.err{color:#b42318}
+@media (prefers-color-scheme:dark){.p30-msg.err{color:#fda29b}}

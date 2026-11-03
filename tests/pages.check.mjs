@@ -1,4 +1,5 @@
 // Every HTML page of the hub loads cro.js (site `hub`, France backend) as a classic script, and mesure.js where it is used.
+// The pages of /programme-30-jours/ load the same /cro.js with their own site id and backend (tests/programme-pages.check.mjs).
 // node tests/pages.check.mjs   (exit code 0 = ok, no dependency)
 import fs from 'node:fs';
 import path from 'node:path';
@@ -7,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const API = 'https://script.google.com/macros/s/AKfycbzD1IRL8QALluKGZxgGiORFP6-DkC_qFJYR9aOxZiimxa06nbCqpzUI-9iLblp6V2VY/exec';
+const { API: P30_API } = await import('../tools/programme-30-jours.mjs');
 const pages = [];
 (function walk(dir) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -23,12 +25,14 @@ for (const p of pages) {
   assert.equal(tags.length, 1, rel + ': one cro.js tag');
   const t = tags[0];
   assert.ok(!/type="module"/.test(t), rel + ': classic script');
-  assert.ok(t.includes('data-site="hub"') && t.includes(`data-api="${API}"`) && t.includes('data-hosts="outils.vread.fr"'), rel + ': site/api/hosts');
+  const p30 = rel.startsWith('programme-30-jours' + path.sep);
+  const [site, api] = p30 ? ['programme-30-jours', P30_API] : ['hub', API];
+  assert.ok(t.includes(`data-site="${site}"`) && t.includes(`data-api="${api}"`) && t.includes('data-hosts="outils.vread.fr"'), rel + ': site/api/hosts');
   const src = t.match(/src="([^"]+)"/)[1];
   const file = src.startsWith('/') ? path.join(root, src) : path.join(path.dirname(p), src);
   assert.equal(path.relative(root, file), 'cro.js', rel + ': src resolves to /cro.js');
   if (html.includes('/mesure.js')) assert.ok(html.indexOf('/mesure.js') < html.indexOf(src), rel + ': cro.js after mesure.js');
-  assert.ok(!/OCTAVE_XP\s*=\s*\[\s*\{/.test(html), rel + ': no A/B experiment on the hub');
+  if (!p30) assert.ok(!/OCTAVE_XP\s*=\s*\[\s*\{/.test(html), rel + ': no A/B experiment on the hub');
 }
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 for (const id of ['hero', 'offres', 'gratuit', 'qui']) assert.match(index, new RegExp(`<section[^>]* id="${id}"`), 'section ' + id);
