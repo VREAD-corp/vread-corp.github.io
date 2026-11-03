@@ -9,7 +9,8 @@
  *                (`legacy`) go to the Exclus tab. With `kind: 'cro'` the hit is the shared cro.js batch (Cro.js,
  *                vendored byte-identical from octave-checkout): daily counters in the Comportement and Experiences tabs.
  *   inscription  POST only: e-mail, optional first name, consent, price version, lang, utm, page -> Inscriptions tab.
- *                lang 'fr' (default, French pages: version a|b, EUR) or 'en' (English page: version 'en', USD, its own
+ *                lang 'fr' (default, French page: version 'app', or a|b during the December price test, EUR) or 'en'
+ *                (English page: version 'en', USD, its own
  *                consent text version).
  *                One row per e-mail: a second sign-up updates `updated_at` (and the first name if one is given),
  *                never the version or the price first shown.
@@ -160,9 +161,11 @@ function trackPage_(page) {
   return p.slice(0, 80) || '/';
 }
 
-/** Price version of a page: '/a/' -> 'a', '/b/' -> 'b', the English landing page -> 'en', else ''. */
+/** Price version of a page: '/' -> APP.rootVersion ('app' in phase 1), '/a/' -> 'a', '/b/' -> 'b' (December test), the
+ *  English landing page -> 'en', else ''. */
 function versionOfPage_(page) {
   if (page === APP.enBase + '/') return 'en';
+  if (page === '/') return APP.rootVersion || '';
   var m = /^\/([ab])\//.exec(page || '');
   return m ? m[1] : '';
 }

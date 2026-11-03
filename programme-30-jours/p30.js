@@ -1,4 +1,5 @@
-// Programme 30 jours (pages /a/ et /b/, et la page anglaise /en/30-day-reading-program/) : formulaire d'inscription,
+// Programme 30 jours (page /programme-30-jours/, version 'app' ; /a/ et /b/ pendant le test de prix de décembre ; page
+// anglaise /en/30-day-reading-program/, version 'en') : formulaire d'inscription,
 // événements de mesure, pré-commande (désactivée). Langue des messages : <html lang>, envoyée au backend (lang).
 // Aucun paiement ici tant que window.P30.precommande est à false. Rien de ce qui est tapé n'est envoyé à la mesure.
 (function () {
@@ -29,8 +30,10 @@
   var store = function (s, k, v) { try { return v === undefined ? window[s].getItem(k) : window[s].setItem(k, v); } catch (e) { return null; } };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
 
-  // Même version au prochain passage par /programme-30-jours/ (une lettre, aucun identifiant).
+  // Test de prix (décembre) : même version au prochain passage par /programme-30-jours/ (une lettre, aucun identifiant).
+  // Hors test, la lettre d'un ancien tirage est effacée.
   if (version === 'a' || version === 'b') store('localStorage', 'p30_version', version);
+  else if (version === 'app') { try { localStorage.removeItem('p30_version'); } catch (e) { /* stockage coupé */ } }
 
   // Paramètres de campagne : ceux de l'adresse, sinon ceux gardés pour l'onglet à l'arrivée.
   var UTM = ['source', 'medium', 'campaign', 'term', 'content'];

@@ -86,3 +86,5 @@
 .p30-msg.ok{background:var(--accent-soft);border-radius:10px;padding:12px 14px}
 .p30-msg.err{color:#b42318}
 @media (prefers-color-scheme:dark){.p30-msg.err{color:#fda29b}}
+.prix-essai{margin:0 0 10px;color:var(--accent);font-size:1.05rem}
+.livres li em{font-style:italic}

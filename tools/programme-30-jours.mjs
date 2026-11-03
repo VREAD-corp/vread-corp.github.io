@@ -1,15 +1,21 @@
-// Generates the pages of the « 30 jours pour refinir un livre » waiting list (Vread, READ FRANCE SAS):
-//   programme-30-jours/index.html             random version (a or b), kept in localStorage, then redirect
-//   programme-30-jours/a/index.html           39,99 € par an
-//   programme-30-jours/b/index.html           79,99 € par an
+// Generates the pages of the « 30 jours pour refinir un livre » waiting list (Vread, READ FRANCE SAS).
+// Phase 1 (from 2026-11-03, Tanguy's answer of that day): one price, the app's annual price in France, 79 € a year with a
+// 14-day free trial. No A/B test.
+//   programme-30-jours/index.html             the page (version 'app')
+//   programme-30-jours/a/, programme-30-jours/b/   redirect to /programme-30-jours/, keeping the query string (utm) and hash
+// Phase 2 (December 2026): two prices on the best ad message, on a grid Tanguy sets at the end of November. Prepared in
+// TEST_DECEMBRE below, OFF. When actif is true: index.html draws a or b (kept in localStorage p30_version) and redirects,
+// /a/ and /b/ show their own price, cro.js experiment TEST_DECEMBRE.experience.
 //   programme-30-jours/confidentialite/       privacy notice of this list
 //   programme-30-jours/mentions-legales/      legal notice (READ FRANCE SAS)
-//   en/30-day-reading-program/index.html      English page for the partners' audience: one price, $39.99 a year, no A/B
+//   en/30-day-reading-program/index.html      English page for the partners' audience: one price, the US annual price
+//                                             of the app ($74.99 a year, 14-day free trial), no A/B
 //   en/30-day-reading-program/privacy/        privacy notice and terms of the list, in English
 //   (en/30-day-reading-program/config.js is hand-written: same backend, English consent text version)
 // node tools/programme-30-jours.mjs   (tests/programme-pages.check.mjs fails if the committed pages differ)
 // Not linked from the hub, noindex until Tanguy validates, not in any sitemap, not sent to IndexNow. Linked only from the
-// screen-time tools (/temps-ecran-en-livres/ -> French page, /en/screen-time-to-books/ -> English page).
+// screen-time tools and the three reading pages (/temps-ecran-en-livres/ etc. -> French page, /en/screen-time-to-books/ ->
+// English page).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,16 +23,29 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const DIR = 'programme-30-jours';
 export const API = 'https://script.google.com/macros/s/AKfycbxXW-9xz90F1nalrIOMIVU9RarjRHTa1zb8F-ajfVIESYEfg5Ec1y4PyObDjz7HL9OA/exec';
-export const VERSIONS = { a: { prix: '39,99 €', montant: '39,99' }, b: { prix: '79,99 €', montant: '79,99' } };
+// App prices in France, read by Tanguy in the App Store and the Play Store on 2026-11-03: annual 79 € (14-day free
+// trial), monthly 9,99 €, weekly 4,99 €, lifetime 149 € (149,99 € on Android). Phase 1 shows the annual price only.
+export const PRIX_APPLI = { version: 'app', prix: '79 €', montant: '79', essai: '14 jours d’essai gratuit' };
+// December price test. Do NOT switch on before Tanguy has sent the grid (end of November) and written « go ». To switch on:
+//   1. versions.a and versions.b = { prix: '<n> €', montant: '<n>', essai: '<texte ou chaîne vide>' } (the grid);
+//   2. actif: true, then npm run programme && npm test;
+//   3. gas-programme-30-jours/src/App.js: the two versions and prices (APP.decembre), then bash gas-programme-30-jours/scripts/deploy.sh;
+//   4. programme-30-jours/config.js: products only if the paid pre-order is validated (web payment + consumer mediator).
+export const TEST_DECEMBRE = {
+  actif: false,
+  experience: 'p30-prix-dec',
+  versions: { a: null, b: null },
+};
 const BASE = 'https://outils.vread.fr/' + DIR + '/';
 const CNL = 'https://centrenationaldulivre.fr/sites/default/files/2025-04/Barom%C3%A8tre%20Les%20Fran%C3%A7ais%20et%20la%20lecture%20Synth%C3%A8se%202025-04-08.pdf';
-const ASSET_V = '2026-11-03c';
+const ASSET_V = '2026-11-03d';
 export const EN_DIR = 'en/30-day-reading-program';
-export const EN_PRICE = '$39.99';
+// US annual price of the app (Tanguy, 2026-11-03; 14-day trial on the App Store from 2026-11-04).
+export const EN_PRICE = '$74.99';
 export const EN_CONSENT = 'p30-en-2026-11-03';
 const EN_BASE = 'https://outils.vread.fr/' + EN_DIR + '/';
 
-/** French typography in text nodes only: non-breaking space before ; : ! ? » and after «, and inside « 39,99 € ». */
+/** French typography in text nodes only: non-breaking space before ; : ! ? » and after «, and inside « 79 € ». */
 function fr(html) {
   let inRaw = false;
   return html.split(/(<[^>]+>)/).map((part) => {
@@ -70,16 +89,28 @@ const footer = `<footer><div class="wrap">
   <nav aria-label="Pied de page"><a href="/${DIR}/confidentialite/">Confidentialité de la liste</a><a href="/${DIR}/mentions-legales/">Mentions légales</a><a href="mailto:octave@vread.fr">Contact : octave@vread.fr</a></nav>
 </div></footer>`;
 
-const scripts = (version) => `${version ? `<script>window.OCTAVE_XP=[{id:'p30-prix',variants:['${version}']}];</script>\n` : ''}<script src="/${DIR}/mesure.js?v=${ASSET_V}" defer></script>
+// xp: cro.js experiment id (December price test only); '' = no experiment.
+const scripts = (version, xp) => `${xp ? `<script>window.OCTAVE_XP=[{id:'${xp}',variants:['${version}']}];</script>\n` : ''}<script src="/${DIR}/mesure.js?v=${ASSET_V}" defer></script>
 <script src="/cro.js" data-site="programme-30-jours" data-api="${API}" data-hosts="outils.vread.fr" data-cta="[data-open-form]" defer></script>`;
 
 const cta = (where) => `<a class="btn" href="#inscription" data-open-form data-mesure="cta_click" data-detail="${where}">Je rejoins le programme de janvier</a>`;
 
-function landing(v) {
-  const { prix } = VERSIONS[v];
+// Premiers livres conseillés (Tanguy, 2026-11-03) : tous ont leurs questions dans Vread.
+export const LIVRES = [
+  ['La Femme de ménage', 'Freida McFadden', 'Parmi les livres les plus terminés dans Vread.'],
+  ['La Psy', 'Freida McFadden', 'Même autrice, et lui aussi parmi les plus terminés dans Vread.'],
+  ['Harry Potter à l’école des sorciers', 'J. K. Rowling', 'Le premier tome de la série.'],
+  ['L’Étranger', 'Albert Camus', '150 pages : le plus court des cinq.'],
+  ['1984', 'George Orwell', 'Le roman du télécran, l’écran qu’on ne peut pas éteindre. De circonstance.'],
+];
+
+/** The programme page. o: { version, prix, montant, essai, path ('' for /programme-30-jours/, 'a/' or 'b/'), xp }. */
+function landing(o) {
+  const { version, prix, essai, path: sub, xp } = o;
+  const prixLong = `${prix} par an${essai ? `, avec ${essai}` : ''}`;
   const title = 'Tu n’arrives plus à finir un livre ? Le programme Vread de 30 jours';
-  const desc = `20 minutes par jour, une preuve à chaque étape, un livre fini en 30 jours. Ouverture en janvier 2027, ${prix} par an. Inscris-toi pour être prévenu.`;
-  return fr(`${head({ title, desc, canonical: BASE + v + '/', version: v, extraHead: `<script src="/${DIR}/config.js?v=${ASSET_V}"></script>\n` })}
+  const desc = `20 minutes par jour, une preuve à chaque étape, un livre fini en 30 jours. Ouverture en janvier 2027 : ${prixLong}. Inscris-toi pour être prévenu.`;
+  return fr(`${head({ title, desc, canonical: BASE + sub, version, extraHead: `<script src="/${DIR}/config.js?v=${ASSET_V}"></script>\n` })}
 <body class="p30">
 ${topbar}
 <main id="contenu">
@@ -90,7 +121,7 @@ ${topbar}
       <h1 id="h1">Tu n’arrives plus à finir un livre ? <span>Ton téléphone y est pour beaucoup.</span></h1>
       <p class="lead">20 minutes par jour, une preuve à chaque étape, un livre fini en 30 jours.</p>
       <div class="cta-row">${cta('hero')}</div>
-      <p class="note">Ouverture en janvier 2027 à ${prix} par an. Rien à payer aujourd’hui.</p>
+      <p class="note">Ouverture en janvier 2027 : ${prixLong}. Rien à payer aujourd’hui.</p>
       <noscript><p class="note">Ce formulaire a besoin de JavaScript. Tu peux aussi écrire à <a href="mailto:octave@vread.fr">octave@vread.fr</a> pour être prévenu.</p></noscript>
     </div>
     <figure class="step-card">
@@ -118,7 +149,7 @@ ${topbar}
   <ol class="etapes">
     <li><strong>Tu lis où tu veux : papier, liseuse, peu importe.</strong><span>L’audio marche aussi. Vread ne remplace pas ton livre, l’appli suit ta lecture.</span></li>
     <li><strong>À chaque étape, une question prouve que tu as lu et compris.</strong><span>Une étape fait 30 à 40 pages, et la réponse tient en un mot.</span></li>
-    <li><strong>Ta série grandit, et chaque semaine tu vois le chemin parcouru.</strong><span>Un rapport par e-mail te donne tes minutes de lecture validée, tes pages et où tu en es dans ton livre.</span></li>
+    <li><strong>Ta série se compte en semaines, et chaque semaine tu vois le chemin parcouru.</strong><span>Un rapport par e-mail te donne tes minutes de lecture validée, tes pages et où tu en es dans ton livre.</span></li>
   </ol>
 </div></section>
 
@@ -131,26 +162,33 @@ ${topbar}
   <h2 id="h-programme">Ce que contient le programme</h2>
   <ul class="contenu">
     <li>Un objectif tenable : 20 minutes de lecture par jour, un livre fini en 30 jours.</li>
-    <li>Le premier livre, choisi pour toi : court, prenant, faisable en 30 jours sans effort héroïque.</li>
+    <li>Un premier livre conseillé, prenant et faisable en 30 jours à ce rythme, avec ses questions dans l’appli.</li>
     <li>La preuve que tu avances : les questions valident chaque étape, ta série montre ta régularité.</li>
     <li>Le rapport de la semaine, par e-mail.</li>
   </ul>
-  <p class="fine2">L’appli Vread reste gratuite pour tout le monde. Le programme ajoute le choix du premier livre, l’objectif sur 30 jours et le rapport de chaque semaine.</p>
 </div></section>
 
-<section class="band soft" id="preuve" aria-labelledby="h-preuve"><div class="wrap narrow">
+<section class="band soft" id="livres" aria-labelledby="h-livres"><div class="wrap">
+  <h2 id="h-livres">Par quel livre commencer</h2>
+  <p>Cinq livres qu’on te conseille pour ton premier mois. Tous ont leurs questions dans Vread.</p>
+  <ul class="contenu livres">
+${LIVRES.map(([t, a, n]) => `    <li><strong><em>${t}</em>, ${a}.</strong> ${n}</li>`).join('\n')}
+  </ul>
+</div></section>
+
+<section class="band" id="preuve" aria-labelledby="h-preuve"><div class="wrap narrow">
   <h2 id="h-preuve">Vread aujourd’hui</h2>
-  <p>Plus de 19 000 lecteurs ont commencé au moins un livre dans Vread, et plus de 13 000 livres y ont été finis, une question après l’autre. L’appli a 4,7 sur 5 sur l’App Store (158 notes).</p>
-  <p class="fine2">Chiffres publiés par Vread sur <a href="https://www.vread.fr/presse">vread.fr/presse</a>, relevés le 29 octobre 2026.</p>
+  <p>19 794 lecteurs ont commencé un livre dans Vread, et 13 804 livres y ont été terminés, une question après l’autre. Plus de 27 000 personnes s’y sont inscrites. L’appli a 4,7 sur 5 sur l’App Store (160 notes).</p>
+  <p class="fine2">Chiffres de Vread au 3 novembre 2026 (ordres de grandeur publiés sur <a href="https://www.vread.fr/presse">vread.fr/presse</a>). Note de l’App Store relevée le même jour.</p>
   <!-- Témoignage : emplacement vide. Aucun témoignage d’ancien lecteur n’a encore été recueilli (à faire lors des appels utilisateurs).
        N’ajouter qu’un témoignage réel, avec l’accord écrit de la personne, son prénom et ce qu’elle a lu. -->
 </div></section>
 
-<section class="band" id="prix" aria-labelledby="h-prix"><div class="wrap">
+<section class="band soft" id="prix" aria-labelledby="h-prix"><div class="wrap">
   <h2 id="h-prix">Le prix</h2>
   <div class="prix-box">
     <p class="prix-montant">${prix} <span>par an</span></p>
-    <p>Ouverture en janvier. Inscris-toi, on te prévient le premier jour.</p>
+${essai ? `    <p class="prix-essai"><strong>${essai[0].toUpperCase() + essai.slice(1)}</strong></p>\n` : ''}    <p>Ouverture en janvier. Inscris-toi, on te prévient le premier jour.</p>
     ${cta('prix')}
     <p class="fine2">Rien à payer aujourd’hui et aucun engagement : l’inscription sert seulement à te prévenir. Prix annoncé pour l’ouverture, toutes taxes comprises.</p>
     <div id="p30-precommande" hidden>
@@ -161,19 +199,21 @@ ${topbar}
   </div>
 </div></section>
 
-<section class="band soft faq" id="faq" aria-labelledby="h-faq"><div class="wrap">
+<section class="band faq" id="faq" aria-labelledby="h-faq"><div class="wrap">
   <h2 id="h-faq">Questions</h2>
   <details id="q-papier"><summary>Je lis sur papier, ça marche ?</summary><p>Oui. Tu lis sur ton support, papier, liseuse ou audio, et tu réponds aux questions dans l’appli.</p></details>
-  <details id="q-temps"><summary>Combien de temps par jour ?</summary><p>20 minutes. Le premier livre est choisi pour être fini en 30 jours à ce rythme.</p></details>
-  <details id="q-rate"><summary>Et si je rate un jour ?</summary><p>Tu as des gels de série, inclus dans la version gratuite de Vread : ils protègent ta série quand tu rates un jour. Et si une question te bloque, un nombre limité de jokers par livre te permet de passer l’étape.</p></details>
-  <details id="q-ouverture"><summary>Quand le programme ouvre-t-il ?</summary><p>En janvier 2027. Tu reçois un e-mail le jour de l’ouverture, avec le prix affiché ici, et tu décides à ce moment-là.</p></details>
+  <details id="q-temps"><summary>Combien de temps par jour ?</summary><p>20 minutes. Les livres conseillés se finissent en 30 jours à ce rythme.</p></details>
+  <details id="q-rate"><summary>Et si je rate un jour, ou une semaine ?</summary><p>Ta série se compte en semaines : une lecture validée dans la semaine suffit à la garder. Si tu rates une semaine entière, un gel de série la couvre. Tu gagnes un gel toutes les 7 bonnes réponses, et tu peux en garder 2 en réserve au maximum.</p></details>
+  <details id="q-joker"><summary>Et si une question me bloque ?</summary><p>Tu utilises un joker : il sert à passer une question.</p></details>
+  <details id="q-prix"><summary>Combien ça coûte ?</summary><p>${prixLong}. Rien n’est à payer aujourd’hui : tu reçois un e-mail à l’ouverture, et tu décides à ce moment-là.</p></details>
+  <details id="q-ouverture"><summary>Quand le programme ouvre-t-il ?</summary><p>En janvier 2027. Tu reçois un e-mail le jour de l’ouverture.</p></details>
   <details id="q-donnees"><summary>Que devient mon adresse e-mail ?</summary><p>Elle sert seulement à te prévenir de l’ouverture. Elle n’est reliée ni à l’appli Vread ni à un compte. Le détail est sur la page <a href="/${DIR}/confidentialite/">confidentialité de la liste</a>.</p></details>
 </div></section>
 
 <div class="wrap">
   <div class="band sources" id="sources">
     <p id="source-1">1. Centre national du livre et Ipsos, <a href="${CNL}">« Les Français et la lecture », baromètre 2025, synthèse</a> (8 avril 2025), enquête par téléphone auprès de 1 001 personnes de 15 ans et plus en janvier 2025 : 31 minutes par jour consacrées à la lecture de livres dans le cadre des loisirs, 10 de moins qu’en 2023 (p. 23) ; 3 h 21 par jour devant un écran sur le temps libre (p. 45).</p>
-    <p>Jokers et gels de série : <a href="https://www.vread.fr/premium">vread.fr/premium</a> et <a href="https://www.vread.fr/a-propos">vread.fr/a-propos</a>, lus le 3 novembre 2026.</p>
+    <p>Série, gels de série et jokers : règles de l’appli Vread au 3 novembre 2026 (voir aussi <a href="https://www.vread.fr/premium">vread.fr/premium</a>). Prix : abonnement annuel de l’appli Vread en France, relevé dans l’App Store et le Play Store le 3 novembre 2026.</p>
   </div>
   <p>${cta('bas')}</p>
 </div>
@@ -183,7 +223,7 @@ ${topbar}
   <div class="inner">
     <button class="x" type="button" data-close-form aria-label="Fermer">×</button>
     <h2 id="h-form">Rejoindre le programme de janvier</h2>
-    <p>On t’écrit le jour de l’ouverture, en janvier 2027, avec le prix : ${prix} par an. Rien à payer aujourd’hui.</p>
+    <p>On t’écrit le jour de l’ouverture, en janvier 2027, avec le prix : ${prixLong}. Rien à payer aujourd’hui.</p>
     <form id="p30-form" novalidate>
       <label for="p30-email">Ton e-mail</label>
       <input id="p30-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254">
@@ -199,12 +239,13 @@ ${topbar}
 
 ${footer}
 <script src="/${DIR}/p30.js?v=${ASSET_V}" defer></script>
-${scripts(v)}
+${scripts(version, xp)}
 </body>
 </html>
 `);
 }
 
+/** December only (TEST_DECEMBRE.actif): draws a or b, keeps it in this browser, redirects to the version's page. */
 function chooser() {
   return fr(`${head({ title: 'Programme Vread de 30 jours pour refinir un livre', desc: '20 minutes par jour, une preuve à chaque étape, un livre fini en 30 jours. Ouverture en janvier 2027.', canonical: BASE,
     extraHead: `<script>
@@ -229,6 +270,29 @@ ${topbar}
 `);
 }
 
+/** Phase 1: /a/ and /b/ (links of the first ads drafts, bookmarks) send to /programme-30-jours/ with their utm and hash. */
+function redirect(v) {
+  return fr(`${head({ title: 'Programme Vread de 30 jours pour refinir un livre', desc: '20 minutes par jour, une preuve à chaque étape, un livre fini en 30 jours. Ouverture en janvier 2027.', canonical: BASE,
+    extraHead: `<script>
+// Version ${v} retirée (un seul prix jusqu’au test de décembre) : la page du programme, avec les paramètres utm de l’adresse.
+(function () {
+  try { var r = document.referrer.split('/')[2]; if (r !== location.hostname) sessionStorage.setItem('p30_ref', r || '-'); } catch (e) {}
+  location.replace('/${DIR}/' + location.search + location.hash);
+})();
+</script>
+<noscript><meta http-equiv="refresh" content="0; url=/${DIR}/"></noscript>
+` })}
+<body class="p30">
+${topbar}
+<main id="contenu"><div class="wrap">
+  <p style="margin-top:32px">Redirection vers la page du programme. Si rien ne se passe, <a href="/${DIR}/">ouvre la page du programme</a>.</p>
+</div></main>
+<script src="/cro.js" data-site="programme-30-jours" data-api="${API}" data-hosts="outils.vread.fr" defer></script>
+</body>
+</html>
+`);
+}
+
 function legalPage({ slug, title, desc, body }) {
   return fr(`${head({ title, desc, canonical: BASE + slug + '/' })}
 <body class="p30">
@@ -245,7 +309,7 @@ ${scripts('')}
 `);
 }
 
-const confidentialite = () => legalPage({
+const confidentialite = (test) => legalPage({
   slug: 'confidentialite',
   title: 'Confidentialité de la liste du programme 30 jours',
   desc: 'Ce que READ FRANCE SAS fait de ton adresse quand tu t’inscris à la liste du programme Vread de 30 jours : finalité, données, durée, droits.',
@@ -255,13 +319,13 @@ const confidentialite = () => legalPage({
   <h2>Ce qui est enregistré quand tu t’inscris</h2>
   <ul>
     <li>ton adresse e-mail et, si tu le donnes, ton prénom ;</li>
-    <li>la version de la page que tu as vue (A ou B) et le prix qu’elle affichait ;</li>
+    <li>le prix affiché par la page${test ? ' et sa version (A ou B, pendant le test de prix)' : ''} ;</li>
     <li>la date et l’heure de l’inscription, la page d’inscription et la version du texte de consentement ;</li>
     <li>les paramètres de campagne présents dans l’adresse de la page (utm_source, utm_medium, utm_campaign, utm_term, utm_content) et le nom de domaine du site d’où tu venais.</li>
   </ul>
   <p>Rien d’autre : pas d’adresse IP, pas de mot de passe, pas de moyen de paiement. Ta liste n’est reliée ni à l’appli Vread, ni à un compte Vread, ni à d’autres fichiers.</p>
   <h2>Pourquoi</h2>
-  <p>Pour t’écrire le jour de l’ouverture du programme, prévue en janvier 2027, et pour compter combien de personnes s’inscrivent avec chaque prix affiché. Tu ne recevras pas de lettre d’information ni d’offre d’un autre produit. L’adresse n’est ni vendue, ni louée, ni partagée.</p>
+  <p>Pour t’écrire le jour de l’ouverture du programme, prévue en janvier 2027, et pour compter combien de personnes s’inscrivent${test ? ' avec chaque prix affiché' : ''}. Tu ne recevras pas de lettre d’information ni d’offre d’un autre produit. L’adresse n’est ni vendue, ni louée, ni partagée.</p>
   <p>Base légale : ton consentement (article 6, paragraphe 1, point a du RGPD), donné en cochant la case du formulaire. Tu peux le retirer à tout moment, sans avoir à te justifier.</p>
   <h2>Combien de temps</h2>
   <p>Jusqu’à l’e-mail d’ouverture, puis trois mois. Si le programme n’ouvre pas, la liste est effacée au plus tard le 30 juin 2027.</p>
@@ -272,7 +336,7 @@ const confidentialite = () => legalPage({
   <h2>Mesure d’audience, sans cookie</h2>
   <p>Ces pages comptent, de façon anonyme et agrégée, les pages vues, l’arrivée jusqu’au prix, les clics sur le bouton d’inscription, l’ouverture du formulaire et les envois, ainsi que le domaine du site d’origine, les paramètres utm, la profondeur de défilement, les sections atteintes, les questions ouvertes, le nom du dernier champ touché (jamais son contenu), les erreurs techniques et la vitesse d’affichage. Seuls des totaux par jour sont gardés, dans le même tableur. Pas de cookie, pas d’identifiant, pas d’adresse IP. Rien n’est mesuré si ton navigateur envoie « Do Not Track » ou « Global Privacy Control ». Cette mesure suit les règles de la mesure d’audience exemptée de consentement (article 82 de la loi Informatique et Libertés, recommandation de la CNIL du 17 septembre 2020).</p>
   <h2>Ce que ces pages gardent dans ton navigateur</h2>
-  <p>Une lettre, a ou b, dans le stockage local (localStorage, clé <code>p30_version</code>), pour te montrer la même version de la page, donc le même prix, à ta prochaine visite. Pour la durée de l’onglet (sessionStorage) : les paramètres utm de ton arrivée, le domaine du site d’origine et la version vue par la mesure. Rien de tout cela ne t’identifie. Tu peux l’effacer en vidant les données du site dans ton navigateur.</p>
+  <p>${test ? 'Une lettre, a ou b, dans le stockage local (localStorage, clé <code>p30_version</code>), pour te montrer la même version de la page, donc le même prix, à ta prochaine visite. ' : ''}Pour la durée de l’onglet (sessionStorage) : les paramètres utm de ton arrivée et le domaine du site d’origine. Rien de tout cela ne t’identifie. Tu peux l’effacer en vidant les données du site dans ton navigateur.</p>
   <h2>Pré-commande</h2>
   <p>Aucune pré-commande ni aucun paiement n’est proposé aujourd’hui. Si une pré-commande ouvre, cette page sera mise à jour avant, avec ce qui concerne le paiement.</p>`,
 });
@@ -338,9 +402,9 @@ const enScripts = `<script src="/${DIR}/mesure.js?v=${ASSET_V}" defer></script>
 const enCta = (where) => `<a class="btn" href="#inscription" data-open-form data-mesure="cta_click" data-detail="${where}">Join the January program</a>`;
 
 function enLanding() {
-  const prix = EN_PRICE;
+  const prix = EN_PRICE, prixLong = `${EN_PRICE} a year with a 14-day free trial`;
   const title = 'Can’t finish a book anymore? Vread’s 30-day reading program';
-  const desc = `20 minutes a day, one question at every step, one book finished in 30 days. Opens in January 2027 at ${prix} a year. Join the list to hear when it opens.`;
+  const desc = `20 minutes a day, one question at every step, one book finished in 30 days. Opens in January 2027 at ${prixLong}. Join the list to hear when it opens.`;
   return `${enHead({ title, desc, canonical: EN_BASE, version: 'en', extraHead: `<script src="/${EN_DIR}/config.js?v=${ASSET_V}"></script>\n` })}
 <body class="p30">
 ${enTopbar}
@@ -352,7 +416,7 @@ ${enTopbar}
       <h1 id="h1">Can’t get through a book anymore? <span>Your phone has a lot to do with it.</span></h1>
       <p class="lead">20 minutes a day, one question at every step, one book finished in 30 days.</p>
       <div class="cta-row">${enCta('hero')}</div>
-      <p class="note">Opens in January 2027 at ${prix} a year. Nothing to pay today.</p>
+      <p class="note">Opens in January 2027 at ${prixLong}. Nothing to pay today.</p>
       <noscript><p class="note">This form needs JavaScript. You can also email <a href="mailto:octave@vread.fr">octave@vread.fr</a> and we’ll tell you when it opens.</p></noscript>
     </div>
     <figure class="step-card">
@@ -380,7 +444,7 @@ ${enTopbar}
   <ol class="etapes">
     <li><strong>Read wherever you like: paper, e-reader, it doesn’t matter.</strong><span>Audiobooks count too. Vread doesn’t replace your book; the app follows your reading.</span></li>
     <li><strong>Every 30 to 40 pages, one question shows you read and understood.</strong><span>The answer is a single word.</span></li>
-    <li><strong>Your streak grows, and each week you see how far you’ve come.</strong><span>A weekly email gives you your validated reading minutes, your pages and where you are in your book.</span></li>
+    <li><strong>Your streak counts in weeks, and each week you see how far you’ve come.</strong><span>A weekly email gives you your validated reading minutes, your pages and where you are in your book.</span></li>
   </ol>
 </div></section>
 
@@ -411,6 +475,7 @@ ${enTopbar}
   <h2 id="h-prix">The price</h2>
   <div class="prix-box">
     <p class="prix-montant">${prix} <span>a year</span></p>
+    <p class="prix-essai"><strong>14-day free trial</strong></p>
     <p>Opens in January. Sign up and we’ll tell you on day one.</p>
     ${enCta('prix')}
     <p class="fine2">Nothing to pay today and no commitment: signing up only means we email you when the program opens. Launch price in US dollars; local taxes may apply.</p>
@@ -421,7 +486,8 @@ ${enTopbar}
   <h2 id="h-faq">Questions</h2>
   <details id="q-papier"><summary>I read on paper. Does that work?</summary><p>Yes. You read on paper, an e-reader or in audio, and answer the questions in the app.</p></details>
   <details id="q-temps"><summary>How much time a day?</summary><p>20 minutes. The first book is chosen so you can finish it in 30 days at that pace.</p></details>
-  <details id="q-rate"><summary>What if I miss a day?</summary><p>Streak freezes, included in the free version of Vread, protect your streak on the days you miss. And if a question stops you, you have a limited number of jokers per book to skip that step.</p></details>
+  <details id="q-rate"><summary>What if I miss a day, or a week?</summary><p>Your streak counts in weeks: one validated reading session in the week is enough to keep it. If you miss a whole week, a streak freeze covers it. You earn a freeze every 7 correct answers, and you can keep up to 2 in reserve.</p></details>
+  <details id="q-joker"><summary>What if a question stops me?</summary><p>Use a joker: it lets you skip a question.</p></details>
   <details id="q-ouverture"><summary>When does the program open?</summary><p>In January 2027. You get an email on opening day with the price shown here, and you decide then.</p></details>
   <details id="q-donnees"><summary>What happens to my email address?</summary><p>It is used only to tell you when the program opens. It isn’t linked to the Vread app or to any account. The details are on the <a href="/${EN_DIR}/privacy/">privacy and terms</a> page.</p></details>
 </div></section>
@@ -429,7 +495,7 @@ ${enTopbar}
 <div class="wrap">
   <div class="band sources" id="sources">
     <p id="source-1">1. Centre national du livre and Ipsos, <a href="${CNL}" hreflang="fr">“Les Français et la lecture”, 2025 barometer, summary</a> (April 8, 2025, in French). Phone survey of 1,001 people aged 15 and over in France, January 2025: 31 minutes a day spent reading books as a leisure activity, 10 fewer than in 2023 (p. 23); 3 h 21 min a day in front of a screen in free time (p. 45).</p>
-    <p>Jokers and streak freezes: <a href="https://www.vread.fr/premium" hreflang="fr">vread.fr/premium</a> and <a href="https://www.vread.fr/a-propos" hreflang="fr">vread.fr/a-propos</a> (in French), read on November 3, 2026.</p>
+    <p>Streak, streak freezes and jokers: rules of the Vread app as of November 3, 2026 (see also <a href="https://www.vread.fr/premium" hreflang="fr">vread.fr/premium</a>, in French). Price: annual subscription to the Vread app in the US, as of November 2026.</p>
   </div>
   <p>${enCta('bas')}</p>
 </div>
@@ -439,7 +505,7 @@ ${enTopbar}
   <div class="inner">
     <button class="x" type="button" data-close-form aria-label="Close">×</button>
     <h2 id="h-form">Join the January program</h2>
-    <p>We’ll email you on opening day, in January 2027, with the price: ${prix} a year. Nothing to pay today.</p>
+    <p>We’ll email you on opening day, in January 2027, with the price: ${prixLong}. Nothing to pay today.</p>
     <form id="p30-form" novalidate>
       <label for="p30-email">Your email</label>
       <input id="p30-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254">
@@ -475,7 +541,7 @@ ${enTopbar}
   <h2>What is recorded when you sign up</h2>
   <ul>
     <li>your email address and, if you give it, your first name;</li>
-    <li>the language of the page (English) and the price it showed ($39.99 a year);</li>
+    <li>the language of the page (English) and the price it showed (${EN_PRICE} a year);</li>
     <li>the date and time of sign-up, the sign-up page and the version of the consent text;</li>
     <li>the campaign parameters in the page address (utm_source, utm_medium, utm_campaign, utm_term, utm_content) and the domain name of the site you came from.</li>
   </ul>
@@ -494,7 +560,7 @@ ${enTopbar}
   <h2>What these pages keep in your browser</h2>
   <p>For the life of the tab (sessionStorage): the utm parameters you arrived with. They do not identify you. You can clear them by clearing this site’s data in your browser.</p>
   <h2>Terms of the list</h2>
-  <p>Joining the list is free and commits you to nothing. No payment is taken on these pages and no pre-order is offered. The price on the page, $39.99 a year in US dollars, is the price announced for the opening; local taxes may apply. The opening email will give the price and the terms of sale, and you decide then. You can leave the list at any time by writing to <a href="mailto:octave@vread.fr">octave@vread.fr</a>.</p>
+  <p>Joining the list is free and commits you to nothing. No payment is taken on these pages and no pre-order is offered. The price on the page, ${EN_PRICE} a year in US dollars with a 14-day free trial, is the price announced for the opening; local taxes may apply. The opening email will give the price and the terms of sale, and you decide then. You can leave the list at any time by writing to <a href="mailto:octave@vread.fr">octave@vread.fr</a>.</p>
   <h2>Publisher and hosting</h2>
   <p>READ FRANCE SAS, a French simplified joint-stock company (société par actions simplifiée) with share capital of €1,000<br>
   Registered office: 11 rue Rouvet, 75019 Paris, France<br>
@@ -512,16 +578,26 @@ ${enScripts}
 `;
 }
 
-export function pages() {
-  return {
-    [`${DIR}/index.html`]: chooser(),
-    [`${DIR}/a/index.html`]: landing('a'),
-    [`${DIR}/b/index.html`]: landing('b'),
-    [`${DIR}/confidentialite/index.html`]: confidentialite(),
-    [`${DIR}/mentions-legales/index.html`]: mentions(),
-    [`${EN_DIR}/index.html`]: enLanding(),
-    [`${EN_DIR}/privacy/index.html`]: enPrivacy(),
-  };
+/** All generated pages. test: the December price test (TEST_DECEMBRE by default, off until Tanguy's grid and go). */
+export function pages(test = TEST_DECEMBRE) {
+  const out = {};
+  if (test.actif) {
+    for (const v of ['a', 'b']) {
+      const o = test.versions[v];
+      if (!o || !/^\d+(,\d\d)? €$/.test(o.prix || '') || !o.montant) throw new Error(`TEST_DECEMBRE.versions.${v}: price missing (grid set by Tanguy)`);
+    }
+    if (test.versions.a.prix === test.versions.b.prix) throw new Error('TEST_DECEMBRE: the two prices are the same');
+    out[`${DIR}/index.html`] = chooser();
+    for (const v of ['a', 'b']) out[`${DIR}/${v}/index.html`] = landing({ essai: '', ...test.versions[v], version: v, path: v + '/', xp: test.experience });
+  } else {
+    out[`${DIR}/index.html`] = landing({ ...PRIX_APPLI, path: '', xp: '' });
+    for (const v of ['a', 'b']) out[`${DIR}/${v}/index.html`] = redirect(v);
+  }
+  out[`${DIR}/confidentialite/index.html`] = confidentialite(test.actif);
+  out[`${DIR}/mentions-legales/index.html`] = mentions();
+  out[`${EN_DIR}/index.html`] = enLanding();
+  out[`${EN_DIR}/privacy/index.html`] = enPrivacy();
+  return out;
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {

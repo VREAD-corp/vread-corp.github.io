@@ -1,12 +1,19 @@
-/* Programme « 30 jours pour refinir un livre » : configuration des pages /programme-30-jours/a/ et /b/.
+/* Programme « 30 jours pour refinir un livre » : configuration de la page /programme-30-jours/ (et de /a/, /b/ pendant le
+ * test de prix de décembre).
+ *
+ * Phase 1 (depuis le 3 novembre 2026) : un seul prix, celui de l'appli, 79 € par an avec 14 jours d'essai gratuit.
+ * Liste d'inscription simple, aucun paiement.
  *
  * precommande: false = liste d'inscription seule (aucun paiement). true = la section prix propose aussi une
  * pré-commande payante remboursable, par le paiement intégré d'octave-global-checkout (PaymentIntent, jamais de
- * Checkout Session). NE PAS passer à true avant (voir README, « Programme 30 jours ») :
- *   1. l'accord écrit de Tanguy sur les montants et sur les conditions de remboursement ;
- *   2. les produits ci-dessous ajoutés au catalogue d'octave-global-checkout (gas/src/Products.js, venture 'p30'),
- *      avec les acheteurs de France acceptés pour ces produits (le backend refuse aujourd'hui tout acheteur de l'UE) ;
- *   3. les CGV de la pré-commande publiées.
+ * Checkout Session). Elle ne servirait qu'au test de prix de décembre. NE PAS passer à true avant (voir README,
+ * « Programme 30 jours ») :
+ *   1. l'accord écrit de Tanguy sur les montants (sa grille de fin novembre) et sur les conditions de remboursement ;
+ *   2. un paiement web qui active le Premium dans l'appli, et un médiateur de la consommation ;
+ *   3. les produits de la grille ajoutés ici (clé = version a ou b) et au catalogue d'octave-global-checkout
+ *      (gas/src/Products.js, venture 'p30'), avec les acheteurs de France acceptés pour ces produits (le backend refuse
+ *      aujourd'hui tout acheteur de l'UE) ;
+ *   4. les CGV de la pré-commande publiées.
  * Aucun objet Stripe n'est créé tant que le drapeau est à false : le module de paiement n'est même pas chargé.
  */
 window.P30 = {
@@ -16,8 +23,5 @@ window.P30 = {
   contact: 'octave@vread.fr',
   ouverture: 'janvier 2027',
   remboursementAvant: '31 janvier 2027',   // non-ouverture à cette date : remboursement intégral d'office
-  produits: {
-    a: { product: 'p30-annuel-a-3999-eur', amount: 3999, currency: 'eur', venture: 'p30', label: '39,99 €' },
-    b: { product: 'p30-annuel-b-7999-eur', amount: 7999, currency: 'eur', venture: 'p30', label: '79,99 €' },
-  },
+  produits: {},                            // décembre : { a: { product, amount (centimes), currency: 'eur', venture: 'p30', label }, b: … }
 };
