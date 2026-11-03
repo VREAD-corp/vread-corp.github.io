@@ -1,9 +1,29 @@
-// Programme 30 jours (pages /a/ et /b/) : formulaire d'inscription, événements de mesure, pré-commande (désactivée).
+// Programme 30 jours (pages /a/ et /b/, et la page anglaise /en/30-day-reading-program/) : formulaire d'inscription,
+// événements de mesure, pré-commande (désactivée). Langue des messages : <html lang>, envoyée au backend (lang).
 // Aucun paiement ici tant que window.P30.precommande est à false. Rien de ce qui est tapé n'est envoyé à la mesure.
 (function () {
   var C = window.P30 || {};
   var doc = document, html = doc.documentElement;
   var version = html.getAttribute('data-version');
+  var lang = html.getAttribute('lang') === 'en' ? 'en' : 'fr';
+  var T = {
+    fr: {
+      consent: 'Coche la case pour qu’on puisse te prévenir par e-mail.',
+      ok: function (r, email) { return '<strong>C’est noté.</strong> ' + (r.updated ? 'Tu étais déjà sur la liste. ' : '') +
+        'On t’écrit à ' + email + ' le jour de l’ouverture, en ' + esc(C.ouverture) + '. Rien n’a été débité.'; },
+      fields: { email: 'ton adresse e-mail', prenom: 'ton prénom (lettres seulement)' },
+      check: function (f) { return 'Vérifie ' + f + ', puis renvoie le formulaire.'; },
+      fail: 'L’envoi n’a pas abouti. Réessaie dans une minute, ou écris à ',
+    },
+    en: {
+      consent: 'Tick the box so we can email you.',
+      ok: function (r, email) { return '<strong>You’re on the list.</strong> ' + (r.updated ? 'You had already signed up. ' : '') +
+        'We’ll write to ' + email + ' on opening day, in ' + esc(C.ouverture) + '. Nothing has been charged.'; },
+      fields: { email: 'your email address', prenom: 'your first name (letters only)' },
+      check: function (f) { return 'Check ' + f + ', then send the form again.'; },
+      fail: 'The form didn’t go through. Try again in a minute, or write to ',
+    },
+  }[lang];
   var q = new URLSearchParams(location.search);
   var track = function (e, d) { try { window.mTrack(e, d); } catch (err) { /* mesure coupée */ } };
   var store = function (s, k, v) { try { return v === undefined ? window[s].getItem(k) : window[s].setItem(k, v); } catch (e) { return null; } };
@@ -59,12 +79,12 @@
     msg.textContent = '';
     if (!f.elements.consent.checked) {
       msg.className = 'p30-msg err';
-      msg.textContent = 'Coche la case pour qu’on puisse te prévenir par e-mail.';
+      msg.textContent = T.consent;
       f.elements.consent.focus();
       return;
     }
     var data = {
-      action: 'inscription', version: version, email: f.elements.email.value.trim(), prenom: f.elements.prenom.value.trim(),
+      action: 'inscription', lang: lang, version: version, email: f.elements.email.value.trim(), prenom: f.elements.prenom.value.trim(),
       consent: true, consent_version: C.consent, page: location.pathname, hp: f.elements.website.value, test: isTest(),
       ref_domain: (store('sessionStorage', 'p30_ref') || doc.referrer.split('/')[2] || '').replace(/^-$/, ''),
     };
@@ -78,16 +98,14 @@
         try { window.octaveCro && window.octaveCro.goal('signup'); } catch (e) { /* off */ }
         f.hidden = true;
         msg.className = 'p30-msg ok';
-        msg.innerHTML = '<strong>C’est noté.</strong> ' + (r.updated ? 'Tu étais déjà sur la liste. ' : '') +
-          'On t’écrit à ' + esc(data.email) + ' le jour de l’ouverture, en ' + esc(C.ouverture) + '. Rien n’a été débité.';
+        msg.innerHTML = T.ok(r, esc(data.email));
         btn.disabled = false;
       })
       .catch(function (e) {
         btn.disabled = false;
         msg.className = 'p30-msg err';
-        var field = { email: 'ton adresse e-mail', prenom: 'ton prénom (lettres seulement)' }[e.field];
-        msg.innerHTML = field ? 'Vérifie ' + field + ', puis renvoie le formulaire.'
-          : 'L’envoi n’a pas abouti. Réessaie dans une minute, ou écris à <a href="mailto:' + C.contact + '">' + C.contact + '</a>.';
+        var field = T.fields[e.field];
+        msg.innerHTML = field ? T.check(field) : T.fail + '<a href="mailto:' + C.contact + '">' + C.contact + '</a>.';
       });
   });
 

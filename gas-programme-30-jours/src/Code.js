@@ -8,7 +8,9 @@
  *                headless user agent, navigator.webdriver, our tests with octave_notrack=1) and hits without `v`
  *                (`legacy`) go to the Exclus tab. With `kind: 'cro'` the hit is the shared cro.js batch (Cro.js,
  *                vendored byte-identical from octave-checkout): daily counters in the Comportement and Experiences tabs.
- *   inscription  POST only: e-mail, optional first name, consent, price version (a|b), utm, page -> Inscriptions tab.
+ *   inscription  POST only: e-mail, optional first name, consent, price version, lang, utm, page -> Inscriptions tab.
+ *                lang 'fr' (default, French pages: version a|b, EUR) or 'en' (English page: version 'en', USD, its own
+ *                consent text version).
  *                One row per e-mail: a second sign-up updates `updated_at` (and the first name if one is given),
  *                never the version or the price first shown.
  *   ping         health check
@@ -22,7 +24,10 @@
  */
 
 var SIGNUP_HEADER = ['created_at', 'updated_at', 'date_paris', 'version', 'prix_eur_an', 'email', 'prenom', 'consent_version',
-  'page', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'source', 'mode', 'statut', 'test', 'inscriptions'];
+  'page', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'source', 'mode', 'statut', 'test', 'inscriptions',
+  // Added 2026-11-03 with the English page (existing sheets get these headers on first use): page language, price per
+  // year in the currency shown (prix_eur_an stays empty for a USD price), currency.
+  'lang', 'prix_an', 'devise'];
 var STATS_HEADER = ['date', 'site', 'page', 'event', 'variant', 'detail', 'source', 'medium', 'campaign', 'count', 'mobile', 'desktop', 'updated_at'];
 var STATS_KEYS = 9;
 var EXCL_HEADER = ['date', 'site', 'page', 'event', 'reason', 'count', 'mobile', 'desktop', 'updated_at'];
@@ -58,7 +63,7 @@ function handle_(e, req) {
       case 'cro_init': return json_(e && e.isPost_ ? croInit_(req) : { ok: false, error: 'method_not_allowed' });
       case 'inscription': return json_(e && e.isPost_ ? inscription_(req) : { ok: false, error: 'method_not_allowed' });
       case 'summary': return json_(summary_(req));
-      case 'ping': return json_({ ok: true, app: APP.name, site: APP.site, consentVersion: APP.consentVersion });
+      case 'ping': return json_({ ok: true, app: APP.name, site: APP.site, consentVersion: APP.consentVersion, consentVersions: APP.consentVersions });
       default: return json_({ ok: false, error: 'unknown_action' });
     }
   } catch (err) {
@@ -85,7 +90,7 @@ function clean_(v, max) { return String(v === undefined || v === null ? '' : v).
 function token_(v, max) { return String(v === undefined || v === null ? '' : v).toLowerCase().replace(/[^a-z0-9._ -]+/g, '').replace(/\s+/g, ' ').trim().slice(0, max); }
 function isTestEmail_(email) { return /@example\.(com|org)$/.test(email) || /^octave\+[a-z0-9._-]*@vread\.fr$/.test(email); }
 function checkAdmin_(req) { if (!req.key || sha256Hex_(String(req.key)) !== APP.adminHash) throw userError_('forbidden'); }
-function versions_() { return APP.xp['p30-prix']; }
+function versions_(lang) { return APP.langVersions[lang] || []; }
 
 function ss_() {
   var props = PropertiesService.getScriptProperties();
@@ -131,6 +136,19 @@ function withLock_(fn) {
   try { return fn(); } finally { lock.releaseLock(); }
 }
 
+/** Inscriptions tab; a sheet created before columns were appended to SIGNUP_HEADER gets the missing header cells. */
+function signupTab_() {
+  var sh = tab_('Inscriptions', SIGNUP_HEADER);
+  var n = sh.getLastColumn();
+  if (n < SIGNUP_HEADER.length) {
+    var cur = sh.getRange(1, 1, 1, n).getValues()[0].map(String);
+    if (cur.join('\u001f') === SIGNUP_HEADER.slice(0, n).join('\u001f')) {
+      sh.getRange(1, n + 1, 1, SIGNUP_HEADER.length - n).setValues([SIGNUP_HEADER.slice(n)]).setFontWeight('bold');
+    }
+  }
+  return sh;
+}
+
 /* ---------- tracking (cookieless, anonymous daily counters) ---------- */
 
 /** Path inside the programme: '/a/', '/b/', '/', '/confidentialite/'… (no query, no prefix, no index.html). */
@@ -142,8 +160,12 @@ function trackPage_(page) {
   return p.slice(0, 80) || '/';
 }
 
-/** Price version of a page: '/a/' -> 'a', '/b/' -> 'b', else ''. */
-function versionOfPage_(page) { var m = /^\/([ab])\//.exec(page || ''); return m ? m[1] : ''; }
+/** Price version of a page: '/a/' -> 'a', '/b/' -> 'b', the English landing page -> 'en', else ''. */
+function versionOfPage_(page) {
+  if (page === APP.enBase + '/') return 'en';
+  var m = /^\/([ab])\//.exec(page || '');
+  return m ? m[1] : '';
+}
 
 function sourceOf_(req) {
   var ref = String(req.ref_domain || '').toLowerCase().replace(/^www\./, '');
@@ -231,9 +253,12 @@ function validPrenom_(v) {
 function inscription_(req) {
   if (req.hp) return { ok: true }; // honeypot: silently ignore bots
   if (req.consent !== true && req.consent !== 'true') throw userError_('consent_required', 'consent');
-  if (String(req.consent_version || '') !== APP.consentVersion) throw userError_('consent_outdated', 'consent_version');
+  var lang = req.lang === undefined || req.lang === null || req.lang === '' ? 'fr' : String(req.lang);
+  if (!Object.prototype.hasOwnProperty.call(APP.consentVersions, lang)) throw userError_('bad_request', 'lang');
+  if (String(req.consent_version || '') !== APP.consentVersions[lang]) throw userError_('consent_outdated', 'consent_version');
   var version = String(req.version || '');
-  if (versions_().indexOf(version) < 0) throw userError_('bad_request', 'version');
+  if (versions_(lang).indexOf(version) < 0) throw userError_('bad_request', 'version');
+  var currency = APP.currencies[version];
   var email = validEmail_(req.email);
   var prenom = validPrenom_(req.prenom);
   var page = trackPage_(req.page) || '';
@@ -242,7 +267,7 @@ function inscription_(req) {
   ['source', 'medium', 'campaign', 'term', 'content'].forEach(function (k) { utm[k] = clean_(req['utm_' + k], 100); });
   if (!rateOk_('inscription', 20)) throw userError_('rate_limited');
   var res = withLock_(function () {
-    var sh = tab_('Inscriptions', SIGNUP_HEADER);
+    var sh = signupTab_();
     var now = now_(), stamp = now.toISOString();
     var last = sh.getLastRow();
     var row = 0;
@@ -257,9 +282,9 @@ function inscription_(req) {
       sh.getRange(row, 19).setValue(Number(cur[18] || 1) + 1);
       return { updated: true, version: String(cur[3]) };
     }
-    sh.appendRow([stamp, stamp, day_(now), version, APP.prices[version], txt_(email), txt_(prenom), APP.consentVersion, txt_(page),
-      txt_(utm.source), txt_(utm.medium), txt_(utm.campaign), txt_(utm.term), txt_(utm.content), txt_(sourceOf_(req)),
-      'liste', 'inscrit', test ? 'yes' : '', 1]);
+    sh.appendRow([stamp, stamp, day_(now), version, currency === 'EUR' ? APP.prices[version] : '', txt_(email), txt_(prenom),
+      APP.consentVersions[lang], txt_(page), txt_(utm.source), txt_(utm.medium), txt_(utm.campaign), txt_(utm.term), txt_(utm.content),
+      txt_(sourceOf_(req)), 'liste', 'inscrit', test ? 'yes' : '', 1, lang, APP.prices[version], currency]);
     if (!test) incrementStat_({ date: day_(now), site: APP.site, page: page || '/', event: 'signup_ok', variant: version, detail: '', source: '(serveur)', medium: '', campaign: '', device: '' });
     return { updated: false, version: version };
   });
@@ -270,14 +295,16 @@ function inscription_(req) {
 
 function summary_(req) {
   checkAdmin_(req);
-  var out = { ok: true, site: APP.site, sheetUrl: ss_().getUrl(), inscriptions: { real: 0, test: 0, byVersion: {}, bySource: {} }, stats: {}, excluded: {} };
-  var sh = tab_('Inscriptions', SIGNUP_HEADER);
+  var out = { ok: true, site: APP.site, sheetUrl: ss_().getUrl(), inscriptions: { real: 0, test: 0, byVersion: {}, bySource: {}, byLang: {} }, stats: {}, excluded: {} };
+  var sh = signupTab_();
   if (sh.getLastRow() >= 2) sh.getRange(2, 1, sh.getLastRow() - 1, SIGNUP_HEADER.length).getValues().forEach(function (r) {
     var test = r[17] === 'yes';
     out.inscriptions[test ? 'test' : 'real']++;
     if (test) return;
-    var v = r[3] + ' (' + r[4] + ' €/an)';
+    var lang = r[19] || 'fr', cur = r[21] || 'EUR', price = r[20] || r[4];
+    var v = r[3] + ' (' + price + (cur === 'EUR' ? ' €' : ' ' + cur) + '/an)';
     out.inscriptions.byVersion[v] = (out.inscriptions.byVersion[v] || 0) + 1;
+    out.inscriptions.byLang[lang] = (out.inscriptions.byLang[lang] || 0) + 1;
     out.inscriptions.bySource[r[14]] = (out.inscriptions.bySource[r[14]] || 0) + 1;
   });
   var st = tab_('Stats', STATS_HEADER);

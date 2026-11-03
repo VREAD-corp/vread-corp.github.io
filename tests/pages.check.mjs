@@ -1,5 +1,6 @@
 // Every HTML page of the hub loads cro.js (site `hub`, France backend) as a classic script, and mesure.js where it is used.
-// The pages of /programme-30-jours/ load the same /cro.js with their own site id and backend (tests/programme-pages.check.mjs).
+// The pages of /programme-30-jours/ and /en/30-day-reading-program/ load the same /cro.js with their own site id and backend
+// (tests/programme-pages.check.mjs).
 // node tests/pages.check.mjs   (exit code 0 = ok, no dependency)
 import fs from 'node:fs';
 import path from 'node:path';
@@ -25,7 +26,7 @@ for (const p of pages) {
   assert.equal(tags.length, 1, rel + ': one cro.js tag');
   const t = tags[0];
   assert.ok(!/type="module"/.test(t), rel + ': classic script');
-  const p30 = rel.startsWith('programme-30-jours' + path.sep);
+  const p30 = rel.startsWith('programme-30-jours' + path.sep) || rel.startsWith(path.join('en', '30-day-reading-program') + path.sep);
   const [site, api] = p30 ? ['programme-30-jours', P30_API] : ['hub', API];
   assert.ok(t.includes(`data-site="${site}"`) && t.includes(`data-api="${api}"`) && t.includes('data-hosts="outils.vread.fr"'), rel + ': site/api/hosts');
   const src = t.match(/src="([^"]+)"/)[1];

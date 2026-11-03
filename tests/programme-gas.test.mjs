@@ -131,4 +131,45 @@ assert.notEqual(post({ action: 'track', kind: 'cro', v: 2, site: 'other', page: 
 assert.equal(ctx.sourceOf_({ ref_domain: 'outils.vread.fr' }), '(interne)');
 assert.equal(ctx.sourceOf_({ ref_domain: 'www.example.org' }), 'example.org');
 
+// English page (lang 'en'): one version, USD, own consent text; French pages unchanged (no lang = 'fr', EUR)
+const en = { action: 'inscription', lang: 'en', version: 'en', email: 'reader@example.com', prenom: 'Sam', consent: true, consent_version: APP.consentVersions.en,
+  page: '/en/30-day-reading-program/', utm_source: 'one-sec', utm_medium: 'partner', utm_campaign: 'january', ref_domain: 'one-sec.app' };
+assert.equal(post({ ...en, consent_version: APP.consentVersion }).error, 'consent_outdated', 'the French consent text is not the English one');
+assert.equal(post({ ...en, version: 'a' }).field, 'version', 'no French price on the English page');
+assert.equal(post({ ...base, email: 'x@example.com', version: 'en' }).field, 'version', 'no English version on a French page');
+assert.equal(post({ ...en, lang: 'de' }).field, 'lang');
+assert.equal(post({ ...en, lang: '__proto__' }).field, 'lang');
+const re1 = post(en);
+assert.deepEqual([re1.ok, re1.updated, re1.test], [true, false, true]);
+const erow = sheets.Inscriptions.rows.at(-1);
+const ecol = (k) => erow[ctx.SIGNUP_HEADER.indexOf(k)];
+assert.deepEqual([ecol('version'), ecol('lang'), ecol('prix_an'), ecol('devise'), ecol('prix_eur_an'), ecol('consent_version'), ecol('page')],
+  ['en', 'en', 39.99, 'USD', '', 'p30-en-2026-11-03', '/en/30-day-reading-program/']);
+assert.deepEqual([ecol('utm_source'), ecol('utm_medium'), ecol('utm_campaign'), ecol('source')], ['one-sec', 'partner', 'january', 'one-sec']);
+post({ ...base, email: 'fr.sans.lang@example.com' });
+const frow = sheets.Inscriptions.rows.at(-1);
+assert.deepEqual([frow[ctx.SIGNUP_HEADER.indexOf('lang')], frow[ctx.SIGNUP_HEADER.indexOf('devise')], frow[4]], ['fr', 'EUR', 39.99]);
+assert.equal(post({ ...base, email: 'fr.lang@example.com', lang: 'fr' }).ok, true);
+const realEn = post({ ...en, email: 'real.reader@gmail.com' });
+assert.equal(realEn.test, false);
+assert.ok(sheets.Stats.rows.some((r) => r[3] === 'signup_ok' && r[4] === 'en' && r[2] === '/en/30-day-reading-program/'), 'real English sign-up counted');
+post({ action: 'track', v: 2, site: APP.site, page: '/en/30-day-reading-program/', event: 'price_view', detail: 'en' });
+assert.ok(sheets.Stats.rows.some((r) => r[2] === '/en/30-day-reading-program/' && r[3] === 'price_view' && r[4] === 'en'));
+post({ action: 'track', v: 2, site: APP.site, page: '/en/30-day-reading-program/privacy/', event: 'view' });
+assert.ok(sheets.Stats.rows.some((r) => r[2] === '/en/30-day-reading-program/privacy/' && r[4] === ''));
+assert.deepEqual(get({ action: 'ping' }).consentVersions, { fr: 'p30-2026-11-03', en: 'p30-en-2026-11-03' });
+
+// A sheet created before the lang/prix_an/devise columns gets them in its header, rows untouched
+{
+  const { ctx: c2, sheets: s2 } = load();
+  const old = c2.SIGNUP_HEADER.slice(0, 19);
+  c2.SpreadsheetApp.openById().insertSheet('Inscriptions').appendRow(old);
+  s2.Inscriptions.appendRow(['2026-11-03T06:00:00.000Z', '2026-11-03T06:00:00.000Z', '2026-11-03', 'a', 39.99, 'ancien@example.com']);
+  const p2 = (b) => JSON.parse(c2.doPost({ postData: { contents: JSON.stringify(b) }, parameter: {} }));
+  assert.equal(p2({ ...en, email: 'new@example.com' }).ok, true);
+  assert.deepEqual(s2.Inscriptions.rows[0], c2.SIGNUP_HEADER, 'header extended');
+  assert.equal(s2.Inscriptions.rows[1][5], 'ancien@example.com');
+  assert.equal(s2.Inscriptions.rows[2][c2.SIGNUP_HEADER.indexOf('devise')], 'USD');
+}
+
 console.log('programme-30-jours gas: ok');
