@@ -6,6 +6,8 @@ Site statique, sans cookie, avec une mesure d’audience anonyme sans donnée pe
 
 Lecture et attention (3 novembre 2026) : calculateur gratuit `/temps-ecran-en-livres/` (version anglaise `/en/screen-time-to-books/`, même script `temps-ecran-en-livres/outil.js`, calcul dans le navigateur, carte PNG dessinée en canvas, lien de résultat `?t=&k=&v=&l=`) et trois pages de conseils sourcées (`/je-n-arrive-plus-a-lire/`, `/se-remettre-a-lire/`, `/lire-au-lieu-de-scroller/`), reliées au hub et vers `/programme-30-jours/` (utm_source `outil-temps-ecran` ou `outils-contenu`). Événements `tool_use`, `free_download`, `cta_click` (site `hub`). Les longueurs de livres sont comptées sur les textes Wikisource de Lectoguide et Project Gutenberg de Chapter Checks ; `og.png` de chaque version est rendu par l’outil lui-même (`window.teDraw`).
 
+Trois pages de conseils de plus (4 novembre 2026) : `/lire-plus-de-livres/`, `/un-livre-par-mois/`, `/quel-livre-pour-reprendre-la-lecture/`. Même gabarit que les pages du 3 novembre, encart vers `/temps-ecran-en-livres/` et liens vers l'appli Vread (App Store `ct=outils-<page>`, Google Play `utm_campaign=<page>`, `data-mesure="cta_click"`) ; elles ne mènent pas à `/programme-30-jours/`. Liées depuis les trois pages du 3 novembre et le hub ; `tests/programme-pages.check.mjs` (5d) y vérifie les règles de rédaction.
+
 Tests (sans dépendance) : `npm test` vérifie `cro.js` (`tests/cro.check.mjs`, copie à l’identique) et la présence de la balise `cro.js` sur chaque page HTML.
 
 `og.png` (1200×630) et `logo-512.png` sont rendus depuis `tools/og-hub.html` et `tools/logo.html` avec Playwright : `PLAYWRIGHT=<chemin du module playwright> node tools/render-images.mjs`, puis réduits en palette (PIL `quantize`).

@@ -170,6 +170,19 @@ for (const f of ['je-n-arrive-plus-a-lire/index.html', 'se-remettre-a-lire/index
   assert.ok(h.includes(`href="/${DIR}/?utm_source=`), f + ': links to the programme page with utm');
 }
 
+// 5d. Reading pages of 2026-11-04 (lire plus, un livre par mois, quel livre pour reprendre): same writing rules, no link
+//     to or mention of the programme, the tool and the app stores linked, listed in the hub sitemap.
+for (const s of ['lire-plus-de-livres', 'un-livre-par-mois', 'quel-livre-pour-reprendre-la-lecture']) {
+  const f = `${s}/index.html`, h = read(f);
+  rules(f, text(h));
+  assert.ok(!h.includes(DIR) && !/programme/i.test(text(h)), f + ': no link to or mention of the programme');
+  assert.ok(!/jalonel/i.test(h), f + ': Vread brand only');
+  assert.ok(h.includes('href="/temps-ecran-en-livres/"'), f + ': links to the tool');
+  assert.ok(h.includes('https://apps.apple.com/fr/app/vread/id6752836822') && h.includes('https://play.google.com/store/apps/details?id=com.vread.app'), f + ': store links');
+  assert.ok(h.includes(`<link rel="canonical" href="https://outils.vread.fr/${s}/">`), f + ': canonical');
+  assert.ok(read('sitemap-hub.xml').includes(`<loc>https://outils.vread.fr/${s}/</loc>`), f + ': in the hub sitemap');
+}
+
 // 6. Pre-order: off; the payment module is vendored but never loaded while the flag is off; no product before December.
 const ctx = { window: {} };
 vm.runInNewContext(read(`${DIR}/config.js`), ctx);
