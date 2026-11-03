@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your screen time in books: free calculator</title>
+<meta name="description" content="Enter your daily screen time and see how many books it adds up to per month and per year, at 238 words a minute (average adult silent reading rate, Brysbaert 2019). Shareable image, no sign-up.">
+<link rel="canonical" href="https://outils.vread.fr/en/screen-time-to-books/">
+<link rel="alternate" hreflang="fr" href="https://outils.vread.fr/temps-ecran-en-livres/">
+<link rel="alternate" hreflang="en" href="https://outils.vread.fr/en/screen-time-to-books/">
+<link rel="alternate" hreflang="x-default" href="https://outils.vread.fr/temps-ecran-en-livres/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Your screen time, converted into books">
+<meta property="og:description" content="How many books is your daily screen time worth? And what would 20 minutes a day get you? The calculation, with its sources.">
+<meta property="og:url" content="https://outils.vread.fr/en/screen-time-to-books/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:site_name" content="READ FRANCE">
+<meta property="og:image" content="https://outils.vread.fr/en/screen-time-to-books/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Card made by the tool: 3 h 21 min of screen time a day; with 20 minutes a day, 27 books a year">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://outils.vread.fr/en/screen-time-to-books/#app","name":"Your screen time in books","url":"https://outils.vread.fr/en/screen-time-to-books/","description":"Free calculator: converts daily screen time into a number of books per month and per year, at a sourced average reading rate (Brysbaert, 2019) and measured book lengths.","applicationCategory":"LifestyleApplication","operatingSystem":"Any (web browser)","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"datePublished":"2026-11-03","dateModified":"2026-11-03","publisher":{"@id":"https://outils.vread.fr/#org"},"translationOfWork":{"@id":"https://outils.vread.fr/temps-ecran-en-livres/#app"}},{"@type":"BreadcrumbList","@id":"https://outils.vread.fr/en/screen-time-to-books/#crumbs","itemListElement":[{"@type":"ListItem","position":1,"name":"outils.vread.fr","item":"https://outils.vread.fr/"},{"@type":"ListItem","position":2,"name":"Your screen time in books","item":"https://outils.vread.fr/en/screen-time-to-books/"}]},{"@type":"Organization","@id":"https://outils.vread.fr/#org","name":"READ FRANCE SAS","url":"https://outils.vread.fr/","logo":"https://outils.vread.fr/logo-512.png","email":"octave@vread.fr","sameAs":["https://www.vread.fr/","https://www.linkedin.com/company/vread-app/"]}]}</script>
+</head>
+<body>
+<a class="skip" href="#contenu">Skip to content</a>
+<header class="topbar"><div class="wrap">
+  <a class="wordmark" href="/" aria-label="READ FRANCE – tools, home (in French)">READ FRANCE <span class="wm-dash" aria-hidden="true">—</span> <span class="wm-sub">outils</span></a>
+  <nav class="topnav" aria-label="Main navigation">
+    <a class="opt" href="/temps-ecran-en-livres/" hreflang="fr" lang="fr">Français</a>
+    <a class="contact-link" href="mailto:octave@vread.fr">Contact</a>
+  </nav>
+</div></header>
+<main id="contenu"><div class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/" hreflang="fr">outils.vread.fr</a></li><li aria-current="page">Screen time in books</li></ol></nav>
+  <h1 style="margin-top:14px">Your screen time, converted into books</h1>
+  <p class="lead">How many books your daily screen time adds up to per month and per year, and how many 20 minutes a day would get you through. The calculation runs in your browser: nothing you type is sent anywhere.</p>
+
+  <div class="te">
+    <form class="te-form" id="te-form" novalidate>
+      <fieldset>
+        <legend>Screen time per day</legend>
+        <div class="te-time">
+          <label><input type="number" id="te-h" name="h" min="0" max="24" step="1" inputmode="numeric" aria-label="Hours"> h</label>
+          <label><input type="number" id="te-m" name="m" min="0" max="59" step="1" inputmode="numeric" aria-label="Minutes"> min</label>
+        </div>
+        <p class="hint">iPhone: Settings › Screen Time › See All App &amp; Website Activity. Android: Settings › Digital Wellbeing. Starting value: 3 h 21 min, the average leisure screen time reported in France (<a href="https://centrenationaldulivre.fr/sites/default/files/2025-04/Barom%C3%A8tre%20Les%20Fran%C3%A7ais%20et%20la%20lecture%20Synth%C3%A8se%202025-04-08.pdf#page=45" hreflang="fr">CNL survey 2025, p. 45</a>). Replace it with yours.</p>
+      </fieldset>
+      <fieldset>
+        <legend>This number is</legend>
+        <div class="te-kind">
+          <label><input type="radio" name="k" value="t" checked> all my screen time</label>
+          <label><input type="radio" name="k" value="s"> my social apps</label>
+        </div>
+      </fieldset>
+      <details>
+        <summary>Assumptions (you can change them)</summary>
+        <label for="te-v">Reading rate, words per minute</label>
+        <input type="number" id="te-v" name="v" min="80" max="600" step="1" inputmode="numeric">
+        <p class="hint">238: average silent reading rate of adults in English for non-fiction in Marc Brysbaert’s 2019 meta-analysis (260 for fiction). Most adults fall between 175 and 300.</p>
+        <label for="te-l">Reference book</label>
+        <select id="te-l" name="l"></select>
+        <p class="hint">Words counted by us on the full Project Gutenberg text (front matter included, so counts run a little high). The Awakening is the median of these seven novels.</p>
+        <div id="te-w-row" hidden>
+          <label for="te-w">Book length, in words</label>
+          <input type="number" id="te-w" name="w" min="5000" max="500000" step="1000" inputmode="numeric" value="80000">
+        </div>
+      </details>
+      <button class="btn" type="submit" data-mesure="tool_use">Convert into books</button>
+      <button type="button" id="te-ping" data-mesure="tool_use" hidden tabindex="-1" aria-hidden="true"></button>
+      <p class="te-err" id="te-err" role="alert" hidden></p>
+    </form>
+
+    <section class="te-out" id="te-out" aria-live="polite" aria-labelledby="h-res">
+      <p class="te-ex" id="te-ex">Example with the French average</p>
+      <h2 id="h-res" class="sr">Result</h2>
+      <p id="te-sum"></p>
+      <p class="te-20" id="te-20"></p>
+      <canvas class="te-card" id="te-card" width="1080" height="1350" role="img" aria-label="Card of your result, to download"></canvas>
+      <div class="te-actions">
+        <button class="btn ghost" type="button" id="te-dl" data-mesure="free_download">Download the image</button>
+        <button class="btn ghost" type="button" id="te-copy">Copy the link to this result</button>
+        <button class="btn ghost" type="button" id="te-share" hidden>Share</button>
+      </div>
+      <p class="te-msg" id="te-msg" role="status" hidden></p>
+      <p class="te-cta">Vread, the reading app, opens a 30-day program to finish a book again in January 2027, 20 minutes a day. It starts in French. <a href="/programme-30-jours/?utm_source=outil-temps-ecran&amp;utm_medium=en" hreflang="fr" data-mesure="cta_click">Join the program’s list (page in French)</a></p>
+    </section>
+  </div>
+
+  <div class="article">
+    <h2 id="method">How the number is calculated</h2>
+    <p>Books per year = minutes per day × words read per minute × 365 ÷ words in the book; per month, divide by 12. With the starting values: 201 minutes × 238 words × 365 days = 17.5 million words, or 273 copies of <em>The Awakening</em> (64,028 words). At 20 minutes a day, the same formula gives 27 books of that length in a year.</p>
+    <p>The reading rate comes from Marc Brysbaert’s meta-analysis “How many words do we read per minute?” (<em>Journal of Memory and Language</em>, 2019): 190 studies, 18,573 participants. He puts adult silent reading in English at 238 words a minute for non-fiction and 260 for fiction. Most of those measurements used short texts read in a lab; a real reading session, with pauses and re-reading, goes a little slower. Lower the rate if you want a cautious estimate.</p>
+
+    <h3>Book lengths, counted on the texts</h3>
+    <table>
+      <thead><tr><th scope="col">Novel</th><th scope="col" class="n">Words</th><th scope="col" class="n">At 20 min a day</th></tr></thead>
+      <tbody>
+        <tr><td><a href="/chapter-checks/quizzes/jekyll-hyde/"><em>Strange Case of Dr Jekyll and Mr Hyde</em></a>, Stevenson, 1886</td><td class="n">25,631</td><td class="n">6 days</td></tr>
+        <tr><td><a href="/chapter-checks/quizzes/christmas-carol/"><em>A Christmas Carol</em></a>, Dickens, 1843</td><td class="n">28,541</td><td class="n">6 days</td></tr>
+        <tr><td><a href="/chapter-checks/titles/great-gatsby/"><em>The Great Gatsby</em></a>, Fitzgerald, 1925</td><td class="n">48,208</td><td class="n">11 days</td></tr>
+        <tr><td><a href="/chapter-checks/titles/the-awakening/"><em>The Awakening</em></a>, Chopin, 1899</td><td class="n">64,028</td><td class="n">14 days</td></tr>
+        <tr><td><a href="/chapter-checks/titles/frankenstein-1831/"><em>Frankenstein</em></a>, Shelley, 1831 edition</td><td class="n">77,965</td><td class="n">17 days</td></tr>
+        <tr><td><a href="/chapter-checks/titles/wuthering-heights/"><em>Wuthering Heights</em></a>, Brontë, 1847</td><td class="n">115,945</td><td class="n">25 days</td></tr>
+        <tr><td><a href="/chapter-checks/titles/jane-eyre/"><em>Jane Eyre</em></a>, Brontë, 1847</td><td class="n">185,390</td><td class="n">39 days</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">Days rounded up, at 238 words a minute.</p>
+
+    <h3>What the result does not say</h3>
+    <p>The big number assumes you would read for all your screen time, which nobody does: phones are also for calls, maps and payments. The useful line is the 20-minute one, the daily target of Vread’s program. At that pace, <em>The Great Gatsby</em> takes 11 days.</p>
+
+    <h2 id="sources">Sources</h2>
+    <ul class="sources">
+      <li>Marc Brysbaert, “<a href="https://doi.org/10.1016/j.jml.2019.104047">How many words do we read per minute? A review and meta-analysis of reading rate</a>”, <em>Journal of Memory and Language</em>, vol. 109, 2019, 104047.</li>
+      <li>Centre national du livre and Ipsos, <a href="https://centrenationaldulivre.fr/sites/default/files/2025-04/Barom%C3%A8tre%20Les%20Fran%C3%A7ais%20et%20la%20lecture%20Synth%C3%A8se%202025-04-08.pdf" hreflang="fr">“Les Français et la lecture” 2025</a> (1,001 people aged 15 and over, phone survey): 3 h 21 min of leisure screen time a day, p. 45.</li>
+      <li>Full texts: Project Gutenberg editions used by <a href="/chapter-checks/">Chapter Checks</a>.</li>
+    </ul>
+    <p class="byline">Tool and text prepared by Octave, READ FRANCE’s AI agent, and published by READ FRANCE SAS, Paris. Published 3 November 2026. Found an error? <a href="mailto:octave@vread.fr">octave@vread.fr</a></p>
+  </div>
+</div></main>
+<footer><div class="wrap">
+  <p>Tool published by READ FRANCE SAS (SIREN 988 741 773), Paris. The calculation runs in your browser; anonymous, aggregated audience measurement, no cookie and no personal data.</p>
+  <nav aria-label="Footer"><a href="/" hreflang="fr">Home (French)</a><a href="/mentions-legales.html" hreflang="fr">Legal notice and privacy (French)</a><a href="mailto:octave@vread.fr">Contact: octave@vread.fr</a></nav>
+</div></footer>
+<script src="/temps-ecran-en-livres/outil.js" defer></script>
+<script src="/mesure.js" defer></script>
+<script src="/cro.js" data-site="hub" data-api="https://script.google.com/macros/s/AKfycbzD1IRL8QALluKGZxgGiORFP6-DkC_qFJYR9aOxZiimxa06nbCqpzUI-9iLblp6V2VY/exec" data-hosts="outils.vread.fr" data-cta="a.btn:not(.ghost)" defer></script>
+</body>
+</html>

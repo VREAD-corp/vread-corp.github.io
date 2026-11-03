@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ton temps d’écran en livres : le calculateur gratuit</title>
+<meta name="description" content="Entre ton temps d’écran par jour : le calculateur dit combien de livres il représente par mois et par an, à 214 mots par minute (vitesse moyenne mesurée en français). Image à partager, sans inscription.">
+<link rel="canonical" href="https://outils.vread.fr/temps-ecran-en-livres/">
+<link rel="alternate" hreflang="fr" href="https://outils.vread.fr/temps-ecran-en-livres/">
+<link rel="alternate" hreflang="en" href="https://outils.vread.fr/en/screen-time-to-books/">
+<link rel="alternate" hreflang="x-default" href="https://outils.vread.fr/temps-ecran-en-livres/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ton temps d’écran, converti en livres">
+<meta property="og:description" content="3 h 21 par jour d’écran, c’est 1 223 heures par an. Combien de livres ? Et avec 20 minutes par jour seulement ? Le calcul, avec ses sources.">
+<meta property="og:url" content="https://outils.vread.fr/temps-ecran-en-livres/">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:site_name" content="READ FRANCE">
+<meta property="og:image" content="https://outils.vread.fr/temps-ecran-en-livres/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Carte générée par l’outil : 3 h 21 par jour de temps d’écran, 232 livres par an ; avec 20 minutes par jour, 23 livres en un an">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://outils.vread.fr/temps-ecran-en-livres/#app","name":"Ton temps d’écran en livres","url":"https://outils.vread.fr/temps-ecran-en-livres/","description":"Calculateur gratuit : convertit un temps d’écran quotidien en nombre de livres par mois et par an, à une vitesse de lecture moyenne sourcée (Brysbaert, 2019) et sur des longueurs de livres mesurées.","applicationCategory":"LifestyleApplication","operatingSystem":"Tous (navigateur web)","inLanguage":"fr","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"datePublished":"2026-11-03","dateModified":"2026-11-03","publisher":{"@id":"https://outils.vread.fr/#org"},"workTranslation":{"@id":"https://outils.vread.fr/en/screen-time-to-books/#app"}},{"@type":"BreadcrumbList","@id":"https://outils.vread.fr/temps-ecran-en-livres/#crumbs","itemListElement":[{"@type":"ListItem","position":1,"name":"outils.vread.fr","item":"https://outils.vread.fr/"},{"@type":"ListItem","position":2,"name":"Ton temps d’écran en livres","item":"https://outils.vread.fr/temps-ecran-en-livres/"}]},{"@type":"Organization","@id":"https://outils.vread.fr/#org","name":"READ FRANCE SAS","url":"https://outils.vread.fr/","logo":"https://outils.vread.fr/logo-512.png","email":"octave@vread.fr","sameAs":["https://www.vread.fr/","https://www.linkedin.com/company/vread-app/"]}]}</script>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="topbar"><div class="wrap">
+  <a class="wordmark" href="/" aria-label="READ FRANCE – outils, accueil">READ FRANCE <span class="wm-dash" aria-hidden="true">—</span> <span class="wm-sub">outils</span></a>
+  <nav class="topnav" aria-label="Navigation principale">
+    <a class="opt" href="/#gratuit">Outils gratuits</a>
+    <a class="opt" href="/a-propos/">Méthode</a>
+    <a class="opt" href="/en/screen-time-to-books/" hreflang="en" lang="en">English</a>
+    <a class="contact-link" href="mailto:octave@vread.fr">Contact</a>
+  </nav>
+</div></header>
+<main id="contenu"><div class="wrap">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><ol><li><a href="/">outils.vread.fr</a></li><li aria-current="page">Temps d’écran en livres</li></ol></nav>
+  <h1 style="margin-top:14px">Ton temps d’écran, converti en livres</h1>
+  <p class="lead">Combien de livres ton temps d’écran représente par mois et par an, et combien 20 minutes par jour suffisent à lire. Le calcul reste dans ton navigateur : rien de ce que tu saisis n’est envoyé.</p>
+
+  <div class="te">
+    <form class="te-form" id="te-form" novalidate>
+      <fieldset>
+        <legend>Temps d’écran par jour</legend>
+        <div class="te-time">
+          <label><input type="number" id="te-h" name="h" min="0" max="24" step="1" inputmode="numeric" aria-label="Heures"> h</label>
+          <label><input type="number" id="te-m" name="m" min="0" max="59" step="1" inputmode="numeric" aria-label="Minutes"> min</label>
+        </div>
+        <p class="hint">iPhone : Réglages › Temps d’écran › Voir toute l’activité. Android : Paramètres › Bien-être numérique. Valeur de départ : la moyenne française sur le temps libre (<a href="https://centrenationaldulivre.fr/sites/default/files/2025-04/Barom%C3%A8tre%20Les%20Fran%C3%A7ais%20et%20la%20lecture%20Synth%C3%A8se%202025-04-08.pdf#page=45">baromètre CNL 2025, p. 45</a>).</p>
+      </fieldset>
+      <fieldset>
+        <legend>Ce chiffre, c’est</legend>
+        <div class="te-kind">
+          <label><input type="radio" name="k" value="t" checked> tout mon temps d’écran</label>
+          <label><input type="radio" name="k" value="s"> mes réseaux sociaux</label>
+        </div>
+      </fieldset>
+      <details>
+        <summary>Hypothèses du calcul (modifiables)</summary>
+        <label for="te-v">Vitesse de lecture, en mots par minute</label>
+        <input type="number" id="te-v" name="v" min="80" max="600" step="1" inputmode="numeric">
+        <p class="hint">214 : moyenne de lecture silencieuse en français chez l’adulte, dans la méta-analyse de Marc Brysbaert (2019, tableau 5 ; 6 études). En anglais, la plupart des adultes lisent entre 175 et 300 mots par minute.</p>
+        <label for="te-l">Livre de référence</label>
+        <select id="te-l" name="l"></select>
+        <p class="hint">Mots comptés par nos soins sur le texte intégral (Wikisource). Thérèse Raquin est la médiane de ces sept romans.</p>
+        <div id="te-w-row" hidden>
+          <label for="te-w">Longueur du livre, en mots</label>
+          <input type="number" id="te-w" name="w" min="5000" max="500000" step="1000" inputmode="numeric" value="80000">
+        </div>
+      </details>
+      <button class="btn" type="submit" data-mesure="tool_use">Convertir en livres</button>
+      <button type="button" id="te-ping" data-mesure="tool_use" hidden tabindex="-1" aria-hidden="true"></button>
+      <p class="te-err" id="te-err" role="alert" hidden></p>
+    </form>
+
+    <section class="te-out" id="te-out" aria-live="polite" aria-labelledby="h-res">
+      <p class="te-ex" id="te-ex">Exemple avec la moyenne française</p>
+      <h2 id="h-res" class="sr">Résultat</h2>
+      <p id="te-sum"></p>
+      <p class="te-20" id="te-20"></p>
+      <canvas class="te-card" id="te-card" width="1080" height="1350" role="img" aria-label="Carte de ton résultat, à télécharger"></canvas>
+      <div class="te-actions">
+        <button class="btn ghost" type="button" id="te-dl" data-mesure="free_download">Télécharger l’image</button>
+        <button class="btn ghost" type="button" id="te-copy">Copier le lien du résultat</button>
+        <button class="btn ghost" type="button" id="te-share" hidden>Partager</button>
+      </div>
+      <p class="te-msg" id="te-msg" role="status" hidden></p>
+      <p class="te-cta">Vread ouvre en janvier 2027 un programme de 30 jours pour refinir un livre, à 20 minutes par jour. <a href="/programme-30-jours/?utm_source=outil-temps-ecran" data-mesure="cta_click">Rejoindre la liste du programme</a></p>
+    </section>
+  </div>
+
+  <div class="article">
+    <h2 id="calcul">Comment le calcul est fait</h2>
+    <p>Livres par an = minutes par jour × mots lus par minute × 365 ÷ nombre de mots du livre. Par mois, on divise par 12. Avec les valeurs de départ : 201 minutes × 214 mots × 365 jours = 15,7 millions de mots, soit 232 fois <em>Thérèse Raquin</em> (67 805 mots). À 20 minutes par jour, la même formule donne 23 livres de cette longueur en un an.</p>
+    <p>La vitesse vient de la méta-analyse de Marc Brysbaert, « How many words do we read per minute? », parue en 2019 dans le <em>Journal of Memory and Language</em> : 190 études, 18 573 participants. Pour l’anglais, il retient 238 mots par minute pour les essais et 260 pour la fiction ; pour le français, son tableau 5 donne 214 mots par minute, à partir de 6 études seulement. La plupart de ces mesures portent sur des textes courts lus en laboratoire. Une vraie séance de lecture, avec ses pauses et ses retours en arrière, avance un peu moins vite : baisse la vitesse si tu veux un calcul prudent.</p>
+
+    <h3>Les longueurs de livres, comptées sur les textes</h3>
+    <p>Nous n’avons pas trouvé de mesure publique fiable de la « longueur moyenne d’un livre », et un roman peut faire 20 000 mots comme 200 000. Nous avons donc compté les mots de sept romans du domaine public dont READ FRANCE utilise déjà le texte intégral pour ses <a href="/lectoguide/">fiches Lectoguide</a> (texte de Wikisource, séparation sur les espaces, préfaces exclues).</p>
+    <table>
+      <thead><tr><th scope="col">Roman</th><th scope="col" class="n">Mots</th><th scope="col" class="n">À 20 min par jour</th></tr></thead>
+      <tbody>
+        <tr><td><a href="/lectoguide/le-dernier-jour-d-un-condamne/"><em>Le Dernier Jour d’un condamné</em></a>, Hugo, 1829</td><td class="n">24 082</td><td class="n">6 jours</td></tr>
+        <tr><td><a href="/lectoguide/candide/"><em>Candide</em></a>, Voltaire, 1759</td><td class="n">33 346</td><td class="n">8 jours</td></tr>
+        <tr><td><a href="/lectoguide/pierre-et-jean/"><em>Pierre et Jean</em></a>, Maupassant, 1888</td><td class="n">44 363</td><td class="n">11 jours</td></tr>
+        <tr><td><a href="/lectoguide/therese-raquin/"><em>Thérèse Raquin</em></a>, Zola, 1867</td><td class="n">67 805</td><td class="n">16 jours</td></tr>
+        <tr><td><a href="/lectoguide/madame-bovary/"><em>Madame Bovary</em></a>, Flaubert, 1857</td><td class="n">116 468</td><td class="n">28 jours</td></tr>
+        <tr><td><a href="/lectoguide/pot-bouille/"><em>Pot-Bouille</em></a>, Zola, 1882</td><td class="n">141 005</td><td class="n">33 jours</td></tr>
+        <tr><td><a href="/lectoguide/au-bonheur-des-dames/"><em>Au Bonheur des Dames</em></a>, Zola, 1883</td><td class="n">152 883</td><td class="n">36 jours</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">Jours arrondis à l’unité supérieure, à 214 mots par minute.</p>
+
+    <h3>Ce que le résultat ne dit pas</h3>
+    <p>Le gros chiffre suppose que tu lirais pendant tout ton temps d’écran, ce que personne ne fait : le téléphone sert aussi à appeler, à se repérer, à payer. Le chiffre de 3 h 21 du baromètre du Centre national du livre compte tous les écrans hors travail et études, télévision comprise ; c’est une déclaration des personnes interrogées, pas une mesure. La ligne utile est celle des 20 minutes, la durée quotidienne que vise le programme de Vread. C’est moins que les 31 minutes par jour que les Français déclarent consacrer aux livres en moyenne (même baromètre), et cela suffit à finir <em>Thérèse Raquin</em> en 16 jours.</p>
+
+    <section class="next" aria-labelledby="h-suite">
+      <h2 id="h-suite">Pour aller plus loin</h2>
+      <p><a href="/je-n-arrive-plus-a-lire/">Tu n’arrives plus à te concentrer pour lire : ce qu’on sait, et ce qui aide</a></p>
+      <p><a href="/se-remettre-a-lire/">Se remettre à lire : un plan de quatre semaines, livre par livre</a></p>
+      <p><a href="/lire-au-lieu-de-scroller/">Lire au lieu de scroller : remplacer 20 minutes de téléphone par un livre</a></p>
+    </section>
+
+    <h2 id="sources">Sources</h2>
+    <ul class="sources">
+      <li>Marc Brysbaert, « <a href="https://doi.org/10.1016/j.jml.2019.104047" hreflang="en">How many words do we read per minute? A review and meta-analysis of reading rate</a> », <em>Journal of Memory and Language</em>, vol. 109, 2019, 104047 (tableau 5 pour le français).</li>
+      <li>Centre national du livre et Ipsos, <a href="https://centrenationaldulivre.fr/sites/default/files/2025-04/Barom%C3%A8tre%20Les%20Fran%C3%A7ais%20et%20la%20lecture%20Synth%C3%A8se%202025-04-08.pdf">baromètre « Les Français et la lecture » 2025, synthèse</a> (1 001 personnes de 15 ans et plus, interrogées par téléphone) : 3 h 21 par jour devant un écran sur le temps libre et 31 minutes de lecture de livres, p. 45.</li>
+      <li>Textes intégraux : Wikisource, éditions indiquées sur chaque <a href="/lectoguide/">fiche Lectoguide</a>.</li>
+    </ul>
+    <p class="byline">Outil et texte préparés par Octave, l’agent IA de READ FRANCE, et publiés par READ FRANCE SAS (<a href="/a-propos/">qui nous sommes</a>). Publié le 03/11/2026. Une erreur ? <a href="mailto:octave@vread.fr">octave@vread.fr</a></p>
+  </div>
+</div></main>
+<footer><div class="wrap">
+<nav class="rf-network" aria-label="Outils de lecture READ FRANCE">
+<p class="rf-network-title">Outils de lecture READ FRANCE</p>
+<ul>
+<li><a href="https://outils.vread.fr/">Tous les outils</a></li>
+<li><a href="https://outils.vread.fr/acquimetre/">Acquimètre</a></li>
+<li><a href="https://outils.vread.fr/lu-et-retenu/">Lu et Retenu</a></li>
+<li><a href="https://outils.vread.fr/civiclasse/">Civiclasse</a></li>
+<li><a href="https://outils.vread.fr/lectoclasse/">Lectoclasse</a></li>
+<li><a href="https://outils.vread.fr/chapter-checks/" hreflang="en">Chapter Checks</a></li>
+<li><a href="https://outils.vread.fr/lectopoint/">Lectopoint</a></li>
+<li><a href="https://outils.vread.fr/lectoguide/">Lectoguide</a></li>
+</ul>
+</nav>
+  <p>Outil édité par READ FRANCE SAS (SIREN 988 741 773), Paris. Le calcul se fait dans ton navigateur ; mesure d’audience anonyme et agrégée, sans cookie ni donnée personnelle.</p>
+  <nav aria-label="Pied de page"><a href="/">Accueil</a><a href="/a-propos/">À propos et méthode</a><a href="/mentions-legales.html">Mentions légales et confidentialité</a><a href="mailto:octave@vread.fr">Contact : octave@vread.fr</a></nav>
+</div></footer>
+<script src="/temps-ecran-en-livres/outil.js" defer></script>
+<script src="/mesure.js" defer></script>
+<script src="/cro.js" data-site="hub" data-api="https://script.google.com/macros/s/AKfycbzD1IRL8QALluKGZxgGiORFP6-DkC_qFJYR9aOxZiimxa06nbCqpzUI-9iLblp6V2VY/exec" data-hosts="outils.vread.fr" data-cta="a.btn:not(.ghost)" defer></script>
+</body>
+</html>

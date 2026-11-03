@@ -117,3 +117,57 @@ footer .rf-network{display:block;margin:0 0 16px;font-size:.9rem}
 .rf-network-title{margin:0 0 .3rem;font-weight:600;color:var(--fg)}
 .rf-network ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.3rem 1.1rem}
 .rf-network a{display:inline-block;padding:.2rem 0}
+
+/* Lecture et attention (2026-11-03) : outil « Temps d'écran en livres » et pages de conseils */
+.crumbs{font-size:.9rem;color:var(--muted);margin:18px 0 0}
+.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.crumbs li+li::before{content:"›";margin-right:6px;color:var(--muted)}
+.article{max-width:740px}
+.article h1{margin-top:14px}
+.article h2{margin-top:40px;font-size:1.45rem}
+.article h3{margin-top:26px;font-size:1.12rem}
+.article table{overflow-wrap:normal;border-collapse:collapse;width:100%;font-size:.95rem;margin:12px 0 4px;display:block;overflow-x:auto}
+.article th,.article td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.article th{background:var(--bg-soft)}
+.article td:first-child{min-width:12em}
+.article td.n,.article th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.article ol li,.article ul li{margin-bottom:8px}
+.byline{color:var(--muted);font-size:.92rem;margin:10px 0 0}
+.article .note{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px}
+.next{margin-top:44px;padding:20px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card)}
+.next h2{margin:0 0 8px;font-size:1.2rem}
+.next p{margin:0 0 10px}
+.next p:last-child{margin:0}
+.sources{font-size:.93rem}
+.sources li{margin-bottom:6px}
+/* Tool */
+.te{display:grid;gap:22px;margin-top:20px}
+@media (min-width:900px){.te{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
+.te-form{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.te-form fieldset{border:0;margin:0 0 14px;padding:0}
+.te-form legend,.te-form .lbl{font-weight:700;margin-bottom:6px;display:block;padding:0}
+.te-time{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.te-time label{display:flex;align-items:center;gap:6px}
+.te-form input[type=number],.te-form select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:44px}
+.te-time input{width:5.2em}
+.te-form select{width:100%}
+.te-kind{display:flex;flex-wrap:wrap;gap:6px 18px}
+.te-kind label{display:flex;align-items:center;gap:6px;min-height:36px}
+.hint{color:var(--muted);font-size:.9rem;margin:6px 0 0}
+.te-form details{margin:4px 0 14px;border-top:1px solid var(--line);padding-top:10px}
+.te-form summary{cursor:pointer;font-weight:600;min-height:36px;display:flex;align-items:center}
+.te-form details label{display:block;margin:10px 0 4px;font-weight:600}
+.te-form button,.te-actions button{font:inherit;cursor:pointer}
+.te-form button[type=submit]{width:100%}
+button.btn{font:inherit}
+.te-err{color:#b91c1c;font-weight:600}
+.te-out{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.te-out p{margin:0 0 12px}
+.te-ex{font-size:.85rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.te-20{font-size:1.15rem;background:var(--accent-soft);border-radius:10px;padding:12px 14px}
+.te-card{display:block;width:100%;max-width:420px;height:auto;border:1px solid var(--line);border-radius:10px;margin:6px 0 12px}
+.te-actions{display:flex;flex-wrap:wrap;gap:10px}
+.te-actions .btn.ghost{padding:10px 14px}
+.te-msg{font-size:.9rem;color:var(--muted);margin:8px 0 0}
+.te-cta{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:.97rem;color:var(--muted)}
+.te-cta a{font-weight:700}
