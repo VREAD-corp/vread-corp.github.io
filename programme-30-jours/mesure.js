@@ -5,8 +5,8 @@ if(n.doNotTrack=='1'||n.globalPrivacyControl||l.hostname!='outils.vread.fr')retu
 // Not a visit (counted apart as "excluded"): our tests (?octave_notrack=1, kept in this browser, =0 clears), automated browsers, crawlers. The user agent is read here only, never sent.
 try{s=localStorage;q.has(K)&&(q.get(K)=='1'?s.setItem(K,'1'):s.removeItem(K));s.getItem(K)=='1'&&(x='notrack')}catch{}
 x=x||(q.get(K)=='1'?'notrack':n.webdriver?'webdriver':/bot\b|crawl|spider|slurp|headless|lighthouse|pagespeed|inspectiontool|googleother|mediapartners|bingpreview|phantom|puppeteer|playwright|selenium/i.test(n.userAgent||'')?'bot':'');
-// Referrer domain only. After the /programme-30-jours/ redirect, the domain the visitor came from (kept for the tab by that page).
-r=d.referrer.split('/')[2];if(r==l.hostname)try{r=sessionStorage.getItem('p30_ref')||r}catch{}
+// Referrer domain only. After the /programme-30-jours/ redirect, the domain the visitor came from, '-' for none (kept for the tab by that page).
+r=d.referrer.split('/')[2];if(r==l.hostname)try{s=sessionStorage.getItem('p30_ref');s&&(r=s=='-'?'':s)}catch{}
 b={v:2,site:'programme-30-jours',page:l.pathname,ref_domain:r,device:innerWidth<768?'mobile':'desktop'};
 for(let g of['source','medium','campaign'])b['utm_'+g]=q.get('utm_'+g);
 if(x)b.excluded=x;

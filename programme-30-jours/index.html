@@ -15,14 +15,14 @@
 <meta property="og:site_name" content="Vread">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/styles.css">
-<link rel="stylesheet" href="/programme-30-jours/p30.css?v=2026-11-03">
+<link rel="stylesheet" href="/programme-30-jours/p30.css?v=2026-11-03b">
 <script>
 // Une version de prix au hasard (a ou b), gardée dans ce navigateur pour les visites suivantes, puis la page de la version.
 (function () {
   var k = 'p30_version', v;
   try { v = localStorage.getItem(k); } catch (e) {}
   if (v !== 'a' && v !== 'b') { v = Math.random() < 0.5 ? 'a' : 'b'; try { localStorage.setItem(k, v); } catch (e) {} }
-  try { var r = document.referrer.split('/')[2]; if (r && r !== location.hostname) sessionStorage.setItem('p30_ref', r); } catch (e) {}
+  try { var r = document.referrer.split('/')[2]; if (r !== location.hostname) sessionStorage.setItem('p30_ref', r || '-'); } catch (e) {}
   location.replace('/programme-30-jours/' + v + '/' + location.search + location.hash);
 })();
 </script>

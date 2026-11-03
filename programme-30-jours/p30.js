@@ -66,7 +66,7 @@
     var data = {
       action: 'inscription', version: version, email: f.elements.email.value.trim(), prenom: f.elements.prenom.value.trim(),
       consent: true, consent_version: C.consent, page: location.pathname, hp: f.elements.website.value, test: isTest(),
-      ref_domain: (store('sessionStorage', 'p30_ref') || doc.referrer.split('/')[2] || ''),
+      ref_domain: (store('sessionStorage', 'p30_ref') || doc.referrer.split('/')[2] || '').replace(/^-$/, ''),
     };
     UTM.forEach(function (k) { data['utm_' + k] = utm[k] || ''; });
     btn.disabled = true;

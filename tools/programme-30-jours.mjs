@@ -16,7 +16,7 @@ export const API = 'https://script.google.com/macros/s/AKfycbxXW-9xz90F1nalrIOMI
 export const VERSIONS = { a: { prix: '39,99 €', montant: '39,99' }, b: { prix: '79,99 €', montant: '79,99' } };
 const BASE = 'https://outils.vread.fr/' + DIR + '/';
 const CNL = 'https://centrenationaldulivre.fr/sites/default/files/2025-04/Barom%C3%A8tre%20Les%20Fran%C3%A7ais%20et%20la%20lecture%20Synth%C3%A8se%202025-04-08.pdf';
-const ASSET_V = '2026-11-03';
+const ASSET_V = '2026-11-03b';
 
 /** French typography in text nodes only: non-breaking space before ; : ! ? » and after «, and inside « 39,99 € ». */
 function fr(html) {
@@ -205,7 +205,7 @@ function chooser() {
   var k = 'p30_version', v;
   try { v = localStorage.getItem(k); } catch (e) {}
   if (v !== 'a' && v !== 'b') { v = Math.random() < 0.5 ? 'a' : 'b'; try { localStorage.setItem(k, v); } catch (e) {} }
-  try { var r = document.referrer.split('/')[2]; if (r && r !== location.hostname) sessionStorage.setItem('p30_ref', r); } catch (e) {}
+  try { var r = document.referrer.split('/')[2]; if (r !== location.hostname) sessionStorage.setItem('p30_ref', r || '-'); } catch (e) {}
   location.replace('/${DIR}/' + v + '/' + location.search + location.hash);
 })();
 </script>
