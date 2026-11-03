@@ -141,7 +141,8 @@ footer .rf-network{display:block;margin:0 0 16px;font-size:.9rem}
 .sources{font-size:.93rem}
 .sources li{margin-bottom:6px}
 /* Tool */
-.te{display:grid;gap:22px;margin-top:20px}
+.te{display:grid;gap:22px;margin-top:20px;grid-template-columns:minmax(0,1fr)}
+.te>*{min-width:0}
 @media (min-width:900px){.te{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
 .te-form{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
 .te-form fieldset{border:0;margin:0 0 14px;padding:0}
