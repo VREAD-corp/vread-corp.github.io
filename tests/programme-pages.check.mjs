@@ -1,13 +1,14 @@
 // Pages of /programme-30-jours/ (Vread waiting list): generated, noindex, not linked, not in a sitemap. Phase 1: one price,
 // the app's (79 € a year, 14-day free trial), no A/B; /a/ and /b/ redirect with their utm. December price test prepared
-// and off. Verified claims only, Tanguy's writing rules (2026-11-03), pre-order flag off. Also checks the reading pages
-// that link to the programme. node tests/programme-pages.check.mjs  (exit 0 = ok)
+// and off. Verified claims only, Tanguy's writing rules (2026-11-03), pre-order flag off. Also checks the reading pages,
+// and « zéro santé » (Tanguy, 2026-11-04) on every public French page. The English programme page is gone (2026-11-04):
+// its address only redirects to /en/screen-time-to-books/. node tests/programme-pages.check.mjs  (exit 0 = ok)
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
-import { pages, DIR, API, PRIX_APPLI, TEST_DECEMBRE, LIVRES, EN_DIR, EN_PRICE, EN_CONSENT } from '../tools/programme-30-jours.mjs';
+import { pages, DIR, API, PRIX_APPLI, TEST_DECEMBRE, LIVRES, RAPPORT_HEBDO, PAGE_INDEXABLE } from '../tools/programme-30-jours.mjs';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (f) => fs.readFileSync(path.join(root, f), 'utf8');
@@ -19,16 +20,22 @@ for (const [rel, html] of Object.entries(gen)) assert.equal(read(rel), html, rel
 
 // 2. Every page: noindex, cro.js with this site's backend, no hub navigation.
 for (const [rel, html] of Object.entries(gen)) {
-  assert.ok(html.includes('<meta name="robots" content="noindex">'), rel + ': noindex until Tanguy validates');
+  const indexed = PAGE_INDEXABLE && rel === `${DIR}/index.html`;
+  assert.equal(html.includes('<meta name="robots" content="noindex">'), !indexed, rel + (indexed ? ': indexable (PAGE_INDEXABLE)' : ': noindex'));
   assert.ok(html.includes(`data-site="programme-30-jours" data-api="${API}"`), rel + ': cro.js site/api');
   assert.ok(!/href="\/"/.test(html) && !/href="https:\/\/outils\.vread\.fr\/"/.test(html), rel + ': no link to the hub');
   assert.ok(!/addictif/i.test(html), rel + ': never « addictif »');
 }
 
+// Zero health (Tanguy, 2026-11-04), even as a warning: none of these words on a public French page. Word starts only, so
+// « intéressante » is not « santé ». A source whose title holds one of them is cited without its title, or removed.
+const HEALTH = /(?<!\p{L})(m[ée]decin|sant[ée]|stress|sommeil|anxi|cerveau|c[ée]r[ée]br|dopamin|m[ée]moire|neuro|m[ée]latonine|brain)/iu;
+const health = (rel, t) => { const m = t.match(HEALTH); assert.ok(!m, rel + ': health word « ' + (m && t.slice(Math.max(0, m.index - 40), m.index + 40)) + ' »'); };
 // Writing rules (Tanguy, 2026-11-03) for the programme page and the reading pages: no health or brain promise, never
 // « addictif », no AI in how the questions are made, « tu », never « la seule appli qui vérifie la lecture », no smaller
 // competitor named, never « 27 000 lecteurs actifs », no old price.
 const rules = (rel, t) => {
+  health(rel, t);
   assert.ok(!/addicti/i.test(t), rel + ': never « addictif »');
   assert.ok(!/cerveau|c[ée]r[ée]br|neuro|dopamine|m[ée]latonine|sant[ée] mentale|bien-[êe]tre mental/i.test(t), rel + ': no brain or health claim');
   assert.ok(!/\b(vous|votre|vos)\b/i.test(t), rel + ': « tu », not « vous »');
@@ -63,6 +70,25 @@ const a = gen[`${DIR}/index.html`], ta = text(a);
   assert.match(a, /name="website"[^>]*tabindex="-1"/);
   rules(`${DIR}/index.html`, ta);
   assert.ok(!/\bIA\b|intelligence artificielle|Octave/.test(ta), 'no AI on the page');
+  // Included in the app's annual subscription, no separate offer (Tanguy, 2026-11-04): hero, price box, FAQ.
+  assert.ok(ta.includes('Le programme est compris dans l’abonnement annuel de l’appli : 79 € par an, avec 14 jours d’essai gratuit.'), 'hero: included');
+  assert.ok(ta.includes('Le programme est compris dans l’abonnement annuel de l’appli Vread. Il n’y a pas d’offre à part.'), 'price box: included');
+  assert.ok(ta.includes('Le programme est compris dans l’abonnement annuel de l’appli Vread : 79 € par an, avec 14 jours d’essai gratuit. Il n’y a pas d’offre à part.'), 'FAQ: included');
+}
+// Weekly e-mail report: shown while RAPPORT_HEBDO is true (waiting for Vincent), gone everywhere when it is false.
+{
+  assert.equal(typeof RAPPORT_HEBDO, 'boolean');
+  assert.equal(/rapport/i.test(ta), RAPPORT_HEBDO, 'weekly report promise follows RAPPORT_HEBDO');
+  for (const rapport of [true, false]) {
+    const t = text(pages(TEST_DECEMBRE, { rapport })[`${DIR}/index.html`]);
+    assert.equal(/rapport/i.test(t), rapport, 'rapport: ' + rapport);
+    assert.equal(t.includes('Le rapport de la semaine, par e-mail.'), rapport);
+    if (!rapport) assert.ok(t.includes('Ta série se compte en semaines. Dans l’appli, tu vois à quelle étape de ton livre tu en es.'));
+    rules('rapport ' + rapport, t);
+  }
+  const idx = pages(TEST_DECEMBRE, { index: true });
+  assert.ok(!idx[`${DIR}/index.html`].includes('name="robots"'), 'index: true drops noindex on the page');
+  for (const rel of Object.keys(idx).filter((k) => k !== `${DIR}/index.html`)) assert.ok(idx[rel].includes('<meta name="robots" content="noindex">'), rel + ': stays noindex');
 }
 for (const v of ['a', 'b']) {
   const r = gen[`${DIR}/${v}/index.html`];
@@ -113,52 +139,33 @@ for (const [t, au] of LIVRES) assert.ok(a.includes(`<em>${t}</em>, ${au}.`), "bo
 assert.ok(/<!-- Témoignage : emplacement vide/.test(a), 'testimonial slot is an HTML comment');
 assert.ok(!/«[^»]*»\s*<\/p>\s*<p[^>]*>\s*(—|–)/.test(a) && !/class="(temoignage|testimonial)"/.test(a), 'no testimonial');
 
-// 5. Not linked from the hub's pages, not in a sitemap, not in robots.txt. (Links from the other tools: checked by hand,
-//    the brief of 2026-11-03 asks for none.)
+// 5. While PAGE_INDEXABLE is false: not linked from the hub's pages, not in a sitemap, not in robots.txt. When it is true:
+//    in sitemap-hub.xml (the hub's other pages may then link to it).
 for (const f of ['index.html', '404.html', 'a-propos/index.html', 'mentions-legales.html', 'informations-prospects/index.html', 'robots.txt', 'sitemap.xml', 'sitemap-hub.xml']) {
-  assert.ok(!read(f).includes(DIR), f + ' mentions ' + DIR);
+  if (!PAGE_INDEXABLE) assert.ok(!read(f).includes(DIR), f + ' mentions ' + DIR);
+}
+if (PAGE_INDEXABLE) assert.ok(read('sitemap-hub.xml').includes(`<loc>https://outils.vread.fr/${DIR}/</loc>`), 'indexable page: in the hub sitemap');
+const READING = ['je-n-arrive-plus-a-lire', 'se-remettre-a-lire', 'lire-au-lieu-de-scroller', 'lire-plus-de-livres', 'un-livre-par-mois', 'quel-livre-pour-reprendre-la-lecture'];
+for (const s of READING) {
+  const h = read(`${s}/index.html`);
+  assert.equal(h.includes(`href="/${DIR}/`), PAGE_INDEXABLE, s + (PAGE_INDEXABLE ? ': links to the programme page' : ': does not link to the programme page'));
 }
 
-// 5b. English page: one price in dollars, no A/B, same backend with lang 'en', English legal page, linked only from the
-//     English screen-time tool.
+// 5b. English programme page removed (Tanguy, 2026-11-04): no generated English page, no config, no privacy page; the
+//     old address is a noindex meta-refresh redirect to the English screen-time tool, which links to the app stores.
 {
-  const en = gen[`${EN_DIR}/index.html`], te = text(en), pv = gen[`${EN_DIR}/privacy/index.html`];
-  assert.ok(en.includes('<html lang="en" data-version="en">'));
-  assert.ok(en.includes(`<link rel="canonical" href="https://outils.vread.fr/${EN_DIR}/">`));
-  assert.ok(!/OCTAVE_XP/.test(en) && !/OCTAVE_XP/.test(pv), 'no A/B test in English');
-  assert.equal(EN_PRICE, '$74.99', 'US annual price of the app');
-  assert.ok(te.includes(EN_PRICE + ' a year with a 14-day free trial'), 'dollar price shown');
-  assert.ok(!/€|79[.,]99|39[.,]99/.test(te) && !/79[.,]99|39[.,]99/.test(text(pv)), 'one price only, in dollars');
-  assert.ok(te.includes('Your streak counts in weeks: one validated reading session in the week is enough to keep it.'));
-  assert.ok(te.includes('You earn a freeze every 7 correct answers, and you can keep up to 2 in reserve.'));
-  assert.ok(te.includes('Use a joker: it lets you skip a question.'));
-  assert.ok(!/addicti|brain|dopamine|the only app/i.test(te), 'en: writing rules');
-  assert.ok(en.includes(`src="/${EN_DIR}/config.js`) && en.includes(`src="/${DIR}/p30.js`));
-  assert.ok(en.includes(`src="/${DIR}/mesure.js`) && en.indexOf('/mesure.js') < en.indexOf('src="/cro.js"'));
-  assert.ok(pv.includes(`src="/${DIR}/mesure.js`) && pv.includes('src="/cro.js"'), 'privacy page measured too');
-  for (const id of ['hero', 'constat', 'comment', 'pourquoi', 'preuve', 'prix', 'faq']) assert.match(en, new RegExp(`<section[^>]* id="${id}"`), 'en: section ' + id);
-  assert.equal((en.match(/data-open-form data-mesure="cta_click"/g) || []).length, 3, 'en: three sign-up buttons, measured');
-  assert.match(en, /name="email" type="email"[^>]*required/);
-  assert.match(en, /type="checkbox" name="consent" required/);
-  assert.match(en, /name="website"[^>]*tabindex="-1"/);
-  assert.ok(!en.includes('p30-precommande') && !en.includes('og-checkout.js'), 'no pre-order in English');
-  assert.match(te, /More than 19,000 readers have started at least one book/);
-  assert.match(te, /4\.7 out of 5 on the French App Store \(158 ratings\)/);
-  assert.ok(en.includes('https://www.vread.fr/presse') && en.includes('October 29, 2026') && en.includes('centrenationaldulivre.fr') && /p\. 23/.test(en));
-  assert.ok(!/27,?000|22,000|10 million/.test(en), 'only the figures of vread.fr/presse');
-  assert.ok(en.includes(`href="/${EN_DIR}/privacy/"`) && pv.includes(EN_CONSENT));
-  assert.ok(!/<a [^>]*href="\/programme-30-jours\//.test(en + pv), 'English pages do not send to the French ones');
-  const cfg = { window: {} };
-  vm.runInNewContext(read(`${EN_DIR}/config.js`), cfg);
-  assert.equal(cfg.window.P30.precommande, false);
-  assert.equal(cfg.window.P30.api, API);
-  assert.equal(cfg.window.P30.consent, EN_CONSENT);
-  assert.deepEqual(Object.keys(cfg.window.P30.produits), []);
-  assert.ok(/lang: lang/.test(read(`${DIR}/p30.js`)), 'p30.js sends the page language');
+  const EN_OLD = 'en/30-day-reading-program';
+  assert.ok(!Object.keys(gen).some((k) => k.startsWith('en/')), 'the generator writes no English page');
+  assert.deepEqual(fs.readdirSync(path.join(root, EN_OLD)), ['index.html'], 'only the redirect is left');
+  const r = read(`${EN_OLD}/index.html`);
+  assert.ok(r.includes('<meta name="robots" content="noindex">'));
+  assert.ok(r.includes('<meta http-equiv="refresh" content="0; url=/en/screen-time-to-books/">'));
+  assert.ok(r.includes('<link rel="canonical" href="https://outils.vread.fr/en/screen-time-to-books/">'));
+  assert.ok(!/<form|\$74|price|program/i.test(text(r)), 'nothing of the old page');
   const tool = read('en/screen-time-to-books/index.html');
-  assert.ok(!tool.includes(`href="/${EN_DIR}/`) && tool.includes('apps.apple.com/us/app/vread/id6752836822'), 'English tool links to the app stores, not to the unopened English page');
-  for (const f of ['index.html', '404.html', 'a-propos/index.html', 'mentions-legales.html', 'informations-prospects/index.html', 'robots.txt', 'sitemap.xml', 'sitemap-hub.xml']) {
-    assert.ok(!read(f).includes(EN_DIR), f + ' mentions ' + EN_DIR);
+  assert.ok(!tool.includes(EN_OLD) && tool.includes('apps.apple.com/us/app/vread/id6752836822'), 'English tool links to the app stores');
+  for (const f of ['index.html', '404.html', 'a-propos/index.html', 'mentions-legales.html', 'informations-prospects/index.html', 'robots.txt', 'sitemap.xml', 'sitemap-hub.xml', 'programme-30-jours/config.js']) {
+    assert.ok(!read(f).includes(EN_OLD), f + ' mentions ' + EN_OLD);
   }
 }
 
@@ -166,8 +173,7 @@ for (const f of ['index.html', '404.html', 'a-propos/index.html', 'mentions-lega
 //     site, not here).
 for (const f of ['je-n-arrive-plus-a-lire/index.html', 'se-remettre-a-lire/index.html', 'lire-au-lieu-de-scroller/index.html', 'temps-ecran-en-livres/index.html']) {
   const h = read(f);
-  rules(f, text(h).replace(/« Brain Drain »|Reexamining the “brain drain” effect/g, ''));
-  assert.ok(!h.includes(`href="/${DIR}/`), f + ': does not link to the programme page');
+  rules(f, text(h));
   assert.ok(h.includes('apps.apple.com/fr/app/vread/id6752836822') && h.includes('play.google.com/store/apps/details?id=com.vread.app'), f + ': app stores linked');
 }
 
@@ -176,12 +182,27 @@ for (const f of ['je-n-arrive-plus-a-lire/index.html', 'se-remettre-a-lire/index
 for (const s of ['lire-plus-de-livres', 'un-livre-par-mois', 'quel-livre-pour-reprendre-la-lecture']) {
   const f = `${s}/index.html`, h = read(f);
   rules(f, text(h));
-  assert.ok(!h.includes(DIR) && !/programme/i.test(text(h)), f + ': no link to or mention of the programme');
+  if (!PAGE_INDEXABLE) assert.ok(!h.includes(DIR) && !/programme/i.test(text(h)), f + ': no link to or mention of the programme');
   assert.ok(!/jalonel/i.test(h), f + ': Vread brand only');
   assert.ok(h.includes('href="/temps-ecran-en-livres/"'), f + ': links to the tool');
   assert.ok(h.includes('https://apps.apple.com/fr/app/vread/id6752836822') && h.includes('https://play.google.com/store/apps/details?id=com.vread.app'), f + ': store links');
   assert.ok(h.includes(`<link rel="canonical" href="https://outils.vread.fr/${s}/">`), f + ': canonical');
   assert.ok(read('sitemap-hub.xml').includes(`<loc>https://outils.vread.fr/${s}/</loc>`), f + ': in the hub sitemap');
+}
+
+// 5e. Zero health on every public French page of the site (generated or not).
+{
+  const fr = [];
+  (function walk(dir) {
+    for (const e of fs.readdirSync(path.join(root, dir), { withFileTypes: true })) {
+      if (e.name.startsWith('.') || ['node_modules', 'tools', 'tests', 'gas-programme-30-jours'].includes(e.name)) continue;
+      const rel = path.join(dir, e.name);
+      if (e.isDirectory()) walk(rel);
+      else if (e.name.endsWith('.html') && /<html lang="fr"/.test(read(rel))) fr.push(rel);
+    }
+  })('');
+  assert.ok(fr.length >= 17, 'French pages found: ' + fr.length);
+  for (const rel of fr) health(rel, text(read(rel)) + ' ' + (read(rel).match(/<meta[^>]+content="[^"]*"|<script type="application\/ld\+json">[\s\S]*?<\/script>|<title>[^<]*/g) || []).join(' '));
 }
 
 // 6. Pre-order: off; the payment module is vendored but never loaded while the flag is off; no product before December.

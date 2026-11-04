@@ -1,5 +1,5 @@
-// Programme 30 jours (page /programme-30-jours/, version 'app' ; /a/ et /b/ pendant le test de prix de décembre ; page
-// anglaise /en/30-day-reading-program/, version 'en') : formulaire d'inscription,
+// Programme 30 jours (page /programme-30-jours/, version 'app' ; /a/ et /b/ pendant le test de prix de décembre ; la page
+// anglaise, version 'en', a été retirée le 4 novembre 2026, ses messages restent ici sans servir) : formulaire d'inscription,
 // événements de mesure, pré-commande (désactivée). Langue des messages : <html lang>, envoyée au backend (lang).
 // Aucun paiement ici tant que window.P30.precommande est à false. Rien de ce qui est tapé n'est envoyé à la mesure.
 (function () {
