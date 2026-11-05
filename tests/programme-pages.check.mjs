@@ -145,7 +145,7 @@ for (const f of ['index.html', '404.html', 'a-propos/index.html', 'mentions-lega
   if (!PAGE_INDEXABLE) assert.ok(!read(f).includes(DIR), f + ' mentions ' + DIR);
 }
 if (PAGE_INDEXABLE) assert.ok(read('sitemap-hub.xml').includes(`<loc>https://outils.vread.fr/${DIR}/</loc>`), 'indexable page: in the hub sitemap');
-const READING = ['je-n-arrive-plus-a-lire', 'se-remettre-a-lire', 'lire-au-lieu-de-scroller', 'lire-plus-de-livres', 'un-livre-par-mois', 'quel-livre-pour-reprendre-la-lecture'];
+const READING = ['je-n-arrive-plus-a-lire', 'se-remettre-a-lire', 'lire-au-lieu-de-scroller', 'lire-plus-de-livres', 'un-livre-par-mois', 'quel-livre-pour-reprendre-la-lecture', 'defi-lecture-2027', 'club-de-lecture-entre-amis'];
 for (const s of READING) {
   const h = read(`${s}/index.html`);
   assert.equal(h.includes(`href="/${DIR}/`), PAGE_INDEXABLE, s + (PAGE_INDEXABLE ? ': links to the programme page' : ': does not link to the programme page'));
@@ -189,6 +189,26 @@ for (const s of ['lire-plus-de-livres', 'un-livre-par-mois', 'quel-livre-pour-re
   assert.ok(h.includes(`<link rel="canonical" href="https://outils.vread.fr/${s}/">`), f + ': canonical');
   assert.ok(read('sitemap-hub.xml').includes(`<loc>https://outils.vread.fr/${s}/</loc>`), f + ': in the hub sitemap');
 }
+
+// 5d bis. Reading pages of 2026-11-05 (défi lecture 2027, club de lecture entre amis): same rules as 5d, store links with
+//     ct/utm_campaign = the page's slug, no price but the app's (79 € a year), linked from the hub, the six other reading
+//     pages' footers and each other.
+for (const s of ['defi-lecture-2027', 'club-de-lecture-entre-amis']) {
+  const f = `${s}/index.html`, h = read(f), t = text(h);
+  rules(f, t);
+  if (!PAGE_INDEXABLE) assert.ok(!h.includes(DIR) && !/programme/i.test(t), f + ': no link to or mention of the programme');
+  assert.ok(!/jalonel/i.test(h) && !/href="https:\/\/(www\.)?vread\.fr\/[a-z]/.test(h), f + ': Vread brand only, no deep link to vread.fr');
+  assert.ok(h.includes('href="/temps-ecran-en-livres/"'), f + ': links to the tool');
+  assert.ok(h.includes(`https://apps.apple.com/fr/app/vread/id6752836822?pt=128157942&amp;ct=outils-${s}&amp;mt=8`), f + ': App Store ct');
+  assert.ok(h.includes(`https://play.google.com/store/apps/details?id=com.vread.app&amp;referrer=utm_source%3Doutils.vread.fr%26utm_campaign%3D${s}`), f + ': Google Play utm');
+  assert.equal((h.match(/data-mesure="cta_click"/g) || []).length, 2, f + ': two measured store buttons');
+  assert.ok(!/€/.test(t) || (/79 € par an/.test(t) && !/(?<!79 )€/.test(t.replace(/79 € par an/g, ''))), f + ': no price but 79 € a year');
+  assert.ok(h.includes(`<link rel="canonical" href="https://outils.vread.fr/${s}/">`), f + ': canonical');
+  assert.ok(read('sitemap-hub.xml').includes(`<loc>https://outils.vread.fr/${s}/</loc>`), f + ': in the hub sitemap');
+  assert.ok(read('index.html').includes(`href="/${s}/"`), f + ': linked from the hub');
+  for (const o of READING) assert.ok(read(`${o}/index.html`).includes(`<li><a href="/${s}/">`), o + ': footer links to ' + s);
+}
+assert.ok(read('defi-lecture-2027/index.html').includes('href="/club-de-lecture-entre-amis/"') && read('club-de-lecture-entre-amis/index.html').includes('href="/defi-lecture-2027/"'), 'the two pages link to each other');
 
 // 5e. Zero health on every public French page of the site (generated or not).
 {

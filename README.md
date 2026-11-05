@@ -8,6 +8,8 @@ Lecture et attention (3 novembre 2026) : calculateur gratuit `/temps-ecran-en-li
 
 Trois pages de conseils de plus (4 novembre 2026) : `/lire-plus-de-livres/`, `/un-livre-par-mois/`, `/quel-livre-pour-reprendre-la-lecture/`. Même gabarit que les pages du 3 novembre, encart vers `/temps-ecran-en-livres/` et liens vers l'appli Vread (App Store `ct=outils-<page>`, Google Play `utm_campaign=<page>`, `data-mesure="cta_click"`) ; elles ne mènent pas à `/programme-30-jours/`. Liées depuis les trois pages du 3 novembre et le hub ; `tests/programme-pages.check.mjs` (5d) y vérifie les règles de rédaction.
 
+Deux pages de conseils de plus (5 novembre 2026) : `/defi-lecture-2027/` (minutes par jour pour 6 à 52 livres en 2027, cinq formats de défi, grille de douze cases, points d'étape fin mars, juin et septembre) et `/club-de-lecture-entre-amis/` (taille du groupe, rythme de 4 ou 6 semaines avec minutes par jour, choix du livre, déroulé d'une séance, livre pas fini). Même gabarit et mêmes liens vers l'appli (App Store `ct=outils-<page>`, Google Play `utm_campaign=<page>`), sans lien vers `/programme-30-jours/` ni vers vread.fr au-delà de l'accueil. Liées depuis le hub, le pied de page des six autres pages de conseils, `/un-livre-par-mois/` et `/lire-plus-de-livres/` ; `tests/programme-pages.check.mjs` (5d bis) y vérifie les règles de rédaction, les liens store et le maillage.
+
 Tests (sans dépendance) : `npm test` vérifie `cro.js` (`tests/cro.check.mjs`, copie à l’identique) et la présence de la balise `cro.js` sur chaque page HTML.
 
 `og.png` (1200×630) et `logo-512.png` sont rendus depuis `tools/og-hub.html` et `tools/logo.html` avec Playwright : `PLAYWRIGHT=<chemin du module playwright> node tools/render-images.mjs`, puis réduits en palette (PIL `quantize`).
