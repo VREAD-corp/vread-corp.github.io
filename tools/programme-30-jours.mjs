@@ -96,6 +96,16 @@ const scripts = (version, xp) => `${xp ? `<script>window.OCTAVE_XP=[{id:'${xp}',
 
 const cta = (where) => `<a class="btn" href="#inscription" data-open-form data-mesure="cta_click" data-detail="${where}">Je rejoins le programme de janvier</a>`;
 
+// Tanguy, 2026-11-05: second button to the app (14-day trial), store links tagged with a campaign code to count installs.
+// Default codes below; app-cta.js rewrites them to meta-<utm_content> when the visitor comes from a Meta ad.
+export const APP_CTA_LABEL = 'Commencer maintenant, 14 jours gratuits';
+export const APPSTORE_URL = 'https://apps.apple.com/fr/app/vread/id6752836822?pt=128157942&amp;ct=p30-direct&amp;mt=8';
+export const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.vread.app&amp;referrer=utm_source%3Doutils.vread.fr%26utm_campaign%3Dprogramme-30-jours';
+const appCta = (where) => `<div class="app-cta" data-app-cta>
+        <a class="btn ghost" href="${APPSTORE_URL}" data-store-btn data-mesure="cta_click" data-detail="app-${where}">${APP_CTA_LABEL}</a>
+        <p class="fine2" data-store-links>Dans l’appli Vread, sur <a href="${APPSTORE_URL}" data-store="ios" data-mesure="cta_click" data-detail="app-${where}-ios">l’App Store</a> ou <a href="${PLAY_URL}" data-store="android" data-mesure="cta_click" data-detail="app-${where}-android">Google Play</a>.</p>
+      </div>`;
+
 // Premiers livres conseillés (Tanguy, 2026-11-03) : tous ont leurs questions dans Vread.
 export const LIVRES = [
   ['La Femme de ménage', 'Freida McFadden', 'Parmi les livres les plus terminés dans Vread.'],
@@ -124,6 +134,7 @@ ${topbar}
       <h1 id="h1">Tu n’arrives plus à finir un livre ? <span>Ton téléphone y est pour beaucoup.</span></h1>
       <p class="lead">20 minutes par jour, une preuve à chaque étape, un livre fini en 30 jours.</p>
       <div class="cta-row">${cta('hero')}</div>
+      ${inclus ? appCta('hero') : ''}
       <p class="note">Ouverture en janvier 2027${inclus ? '. Le programme est compris dans l’abonnement annuel de l’appli' : ''} : ${prixLong}. Rien à payer aujourd’hui.</p>
       <noscript><p class="note">Ce formulaire a besoin de JavaScript. Tu peux aussi écrire à <a href="mailto:octave@vread.fr">octave@vread.fr</a> pour être prévenu.</p></noscript>
     </div>
@@ -194,6 +205,7 @@ ${LIVRES.map(([t, a, n]) => `    <li><strong><em>${t}</em>, ${a}.</strong> ${n}<
     <p class="prix-montant">${prix} <span>par an</span></p>
 ${essai ? `    <p class="prix-essai"><strong>${essai[0].toUpperCase() + essai.slice(1)}</strong></p>\n` : ''}${inclus ? '    <p><strong>Le programme est compris dans l’abonnement annuel de l’appli Vread.</strong> Il n’y a pas d’offre à part.</p>\n' : ''}    <p>Ouverture en janvier. Inscris-toi, on te prévient le premier jour.</p>
     ${cta('prix')}
+    ${inclus ? appCta('prix') : ''}
     <p class="fine2">Rien à payer aujourd’hui et aucun engagement : l’inscription sert seulement à te prévenir. Prix annoncé pour l’ouverture, toutes taxes comprises.</p>
     <div id="p30-precommande" hidden>
       <p><strong>Ou pré-commande dès maintenant, ${prix}.</strong> Tu es remboursé en entier sur simple demande jusqu’à l’ouverture, et d’office si le programme n’a pas ouvert le 31 janvier 2027.</p>
@@ -243,7 +255,7 @@ ${essai ? `    <p class="prix-essai"><strong>${essai[0].toUpperCase() + essai.sl
 
 ${footer}
 <script src="/${DIR}/p30.js?v=${ASSET_V}" defer></script>
-${scripts(version, xp)}
+${scripts(version, xp)}${inclus ? `\n<script src="/${DIR}/app-cta.js?v=${ASSET_V}" defer></script>` : ''}
 </body>
 </html>
 `);

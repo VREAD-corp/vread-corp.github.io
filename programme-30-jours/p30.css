@@ -88,3 +88,7 @@
 @media (prefers-color-scheme:dark){.p30-msg.err{color:#fda29b}}
 .prix-essai{margin:0 0 10px;color:var(--accent);font-size:1.05rem}
 .livres li em{font-style:italic}
+.app-cta{margin:10px 0 4px}
+.app-cta .fine2{margin:6px 0 0;font-size:.9rem}
+.cta-row + .app-cta .btn{width:auto}
+.prix-box .app-cta .btn{width:100%;margin:0 0 6px}

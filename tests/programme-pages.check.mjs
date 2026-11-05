@@ -237,4 +237,15 @@ assert.ok(/C\.precommande === true/.test(read(`${DIR}/p30.js`)), 'module loaded 
 assert.ok(!/checkout\/sessions/.test(read(`${DIR}/p30.js`) + read(`${DIR}/config.js`)), 'never a Checkout Session');
 assert.ok(read(`${DIR}/mesure.js`).includes(API + '?action=track'));
 
+// App button (Tanguy, 2026-11-05): second CTA to the stores, tagged with a campaign code; January sign-up stays.
+{
+  const label = 'Commencer maintenant, 14 jours gratuits';
+  assert.equal((a.match(new RegExp(label, 'g')) || []).length, 2, 'app button in hero and price block');
+  assert.ok(a.includes('https://apps.apple.com/fr/app/vread/id6752836822?pt=128157942&amp;ct=p30-direct&amp;mt=8'), 'App Store link with campaign code');
+  assert.ok(a.includes('https://play.google.com/store/apps/details?id=com.vread.app&amp;referrer=utm_source%3Doutils.vread.fr%26utm_campaign%3Dprogramme-30-jours'), 'Google Play link with referrer');
+  assert.ok(a.includes(`/${DIR}/app-cta.js?v=`), 'app-cta.js loaded');
+  assert.ok(/data-open-form/.test(a) && a.includes('Je rejoins le programme de janvier'), 'January sign-up kept');
+  const js = read(`${DIR}/app-cta.js`);
+  assert.ok(js.includes("ct=' + ('meta-' + content).slice(0, 40)") && js.includes('pt=128157942'), 'Meta campaign code in app-cta.js');
+}
 console.log(`programme pages: ok (${Object.keys(gen).length} pages)`);
