@@ -38,9 +38,9 @@ const BASE = 'https://outils.vread.fr/' + DIR + '/';
 const CNL = 'https://centrenationaldulivre.fr/sites/default/files/2025-04/Barom%C3%A8tre%20Les%20Fran%C3%A7ais%20et%20la%20lecture%20Synth%C3%A8se%202025-04-08.pdf';
 const ASSET_V = '2026-11-03d';
 // Weekly e-mail report promised on the page (« Un rapport par e-mail… », « Le rapport de la semaine, par e-mail. »).
-// Waits for Vincent's answer (the app's weekly summary); Tanguy, 2026-11-04: without a clear answer on 6 November, remove
-// the promise. To remove it: false, then npm run programme && npm test.
-export const RAPPORT_HEBDO = true;
+// Set to false on 2026-11-07: no clear answer from Vincent by 6 November (Tanguy, 2026-11-04).
+// To restore the promise once the app's weekly summary is confirmed: true, then npm run programme && npm test.
+export const RAPPORT_HEBDO = false;
 // The page /programme-30-jours/ in search engines. false: noindex, no link from the hub or the reading pages, not in a
 // sitemap, not sent to IndexNow. true (after the weekly-report decision above): the page drops noindex, and npm test then
 // requires its URL in sitemap-hub.xml and a link to it from the six reading pages (send the URL to IndexNow afterwards).
